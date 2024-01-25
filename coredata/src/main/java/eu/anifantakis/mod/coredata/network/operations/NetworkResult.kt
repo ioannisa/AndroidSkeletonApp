@@ -1,4 +1,4 @@
-package com.example.democompose.network.operations
+package eu.anifantakis.mod.coredata.network.operations
 
 sealed class NetworkResult<T>(
     val data: T? = null,
@@ -7,5 +7,4 @@ sealed class NetworkResult<T>(
     class Success<T>(data: T) : NetworkResult<T>(data)
     class Error<T>(message: String, data: T? = null) : NetworkResult<T>(data, message)
     class Loading<T> : NetworkResult<T>()
-    //class SuccessLocal<T>(data: T) : NetworkResult<T>(data)
 }

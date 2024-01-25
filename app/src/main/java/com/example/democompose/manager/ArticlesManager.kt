@@ -4,8 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.example.democompose.data.model.domain.ArticleDomain
 import com.example.democompose.data.repository.ArticlesRepository
-import com.example.democompose.network.operations.NetworkResult
-import com.example.democompose.utils.RepositoryResponse
+import eu.anifantakis.mod.coredata.RepositoryResponse
+import eu.anifantakis.mod.coredata.network.operations.NetworkResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +30,7 @@ class ArticlesManagerImpl @Inject constructor(private val articlesRepository: Ar
     override val selectedArticle: State<ArticleDomain?> = _selectedArticle
 
     override suspend fun query(query: String, fromDate: String, sortBy: String): Flow<RepositoryResponse<List<ArticleDomain>>> = flow {
-        articlesRepository.getDomainArticlesNoCache(query, fromDate, sortBy).collect { result ->
+        articlesRepository.getDomainArticlesCached(query, fromDate, sortBy).collect { result ->
             when (result) {
                 is NetworkResult.Error -> {
                     storeLocally(articles = result.data)
@@ -45,9 +45,6 @@ class ArticlesManagerImpl @Inject constructor(private val articlesRepository: Ar
                     // emit back to the caller only when error or success
                     emit(RepositoryResponse.Success(result.data as List<ArticleDomain>))
                 }
-//                is NetworkResult.SuccessLocal -> {
-//                    storeLocally(articles = result.data)
-//                }
             }
         }
     }

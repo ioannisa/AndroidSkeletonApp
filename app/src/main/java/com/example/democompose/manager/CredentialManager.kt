@@ -1,6 +1,6 @@
 package com.example.democompose.manager
 
-import com.example.democompose.utils.EncryptedData
+import eu.anifantakis.mod.coredata.EncryptedData
 import javax.inject.Inject
 
 interface CredentialManager {

@@ -3,9 +3,9 @@ package com.example.democompose.views
 import androidx.lifecycle.viewModelScope
 import com.example.democompose.data.model.domain.ArticleDomain
 import com.example.democompose.manager.ArticlesManager
-import com.example.democompose.utils.RepositoryResponse
 import com.example.democompose.views.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import eu.anifantakis.mod.coredata.RepositoryResponse
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

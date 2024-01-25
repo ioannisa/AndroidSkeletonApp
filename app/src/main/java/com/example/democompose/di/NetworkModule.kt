@@ -4,7 +4,6 @@ import android.content.Context
 import com.example.democompose.BuildConfig
 import com.example.democompose.data.api.NewsAPI
 import com.example.democompose.manager.CredentialManager
-import com.example.democompose.network.monitor.ConnectivityMonitor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module

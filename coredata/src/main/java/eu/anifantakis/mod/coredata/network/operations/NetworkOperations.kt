@@ -1,4 +1,4 @@
-package com.example.democompose.network.operations
+package eu.anifantakis.mod.coredata.network.operations
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -89,81 +89,3 @@ abstract class NetworkOperations () {
         Timber.d("BaseRepository - Data Emitted")
     }
 }
-
-
-
-//abstract class NetworkOperations () {
-//    // Generic function for network operations
-//    protected inline fun <T, R, D> performNetworkOperation(
-//        crossinline apiRequest: suspend () -> Response<T>,
-//        noinline cacheFetch: (suspend () -> Flow<R>)? = null,
-//        noinline processResponse: (suspend (T) -> R)? = null,
-//
-//
-//
-//        noinline domainMapper: ((R) -> D)? = null,
-//        crossinline onFetchFailed: (Throwable) -> Unit = { }
-//    ): Flow<NetworkResult<D>> = flow {
-//        var localDataCache: R? = null
-//
-//        emit(NetworkResult.Loading())
-//        Timber.d("BaseRepository - (Loading)")
-//
-//        if (cacheFetch != null) {
-//            localDataCache = cacheFetch().firstOrNull()
-//            if (localDataCache != null) {
-//                val emitData: NetworkResult<D> = if (domainMapper != null) {
-//                    NetworkResult.SuccessLocal(domainMapper(localDataCache))
-//                }
-//                else {
-//                    NetworkResult.SuccessLocal(localDataCache as D)
-//                }
-//                emit(emitData)
-//                Timber.d("BaseRepository - Collect Local Data (Success)")
-//            }
-//        }
-//
-//        try {
-//            val response = apiRequest()
-//            if (response.isSuccessful) {
-//                val body = response.body()
-//                if (body != null) {
-//                    val processedResponse = processResponse?.invoke(body) ?: body as R
-//                    val emitData: NetworkResult<D> = if (domainMapper != null) {
-//                        NetworkResult.Success(domainMapper(processedResponse))
-//                    }
-//                    else {
-//                        NetworkResult.Success(processedResponse as D)
-//                    }
-//                    emit(emitData)
-//                } else {
-//                    emit(
-//                        NetworkResult.Error<D>(
-//                            message = "BaseRepository - No data found",
-//                            data = localDataCache as? D
-//                        )
-//                    )
-//                }
-//            } else {
-//                emit(NetworkResult.Error<D>(response.message()))
-//                Timber.e("BaseRepository - Network Fetch (Fail) - ${response.message()}")
-//            }
-//        } catch (e: Exception) {
-//            onFetchFailed(e)
-//            val errorData: NetworkResult<D> = if (domainMapper != null && localDataCache != null) {
-//                NetworkResult.Error(
-//                    message = e.localizedMessage ?: "Unknown error occurred",
-//                    data = domainMapper(localDataCache)
-//                )
-//            } else {
-//
-//                NetworkResult.Error(
-//                    message = e.localizedMessage ?: "Unknown error occurred",
-//                    data = localDataCache as? D
-//                )
-//            }
-//            emit(errorData)
-//            Timber.e("BaseRepository - Network Fetch (Fail) - Unknown Error")
-//        }
-//    }
-//}

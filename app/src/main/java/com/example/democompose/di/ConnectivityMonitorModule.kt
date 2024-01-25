@@ -1,7 +1,7 @@
 package com.example.democompose.di
 
 import android.content.Context
-import com.example.democompose.network.monitor.ConnectivityMonitor
+import eu.anifantakis.mod.coredata.network.monitor.ConnectivityMonitor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

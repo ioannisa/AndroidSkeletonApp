@@ -15,12 +15,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.democompose.navigation.ApplicationScaffold
-import com.example.democompose.network.monitor.ConnectivityMonitor
-import com.example.democompose.network.monitor.ConnectivityObservable
 import com.example.democompose.ui.theme.DemoComposeTheme
 import com.example.democompose.utils.ObservableLoadingInteger
 import com.example.democompose.views.base.NoNetworkDialog
 import dagger.hilt.android.AndroidEntryPoint
+import eu.anifantakis.mod.coredata.network.monitor.ConnectivityMonitor
+import eu.anifantakis.mod.coredata.network.monitor.ConnectivityObservable
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -49,7 +49,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             DemoComposeTheme {
-                val networkAvailable = connectivityMonitor.observe().collectAsState(ConnectivityObservable.Status.Available)
+                val networkAvailable = connectivityMonitor.observe().collectAsState(
+                    ConnectivityObservable.Status.Available)
 
                 // State to control the visibility of the dialog
                 var showDialog by rememberSaveable { mutableStateOf(false) }

@@ -2,7 +2,7 @@ package com.example.democompose.data.repository
 
 import com.example.democompose.data.model.Article
 import com.example.democompose.data.model.domain.ArticleDomain
-import com.example.democompose.network.operations.NetworkResult
+import eu.anifantakis.mod.coredata.network.operations.NetworkResult
 import kotlinx.coroutines.flow.Flow
 
 interface ArticlesRepository {

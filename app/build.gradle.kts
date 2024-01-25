@@ -99,6 +99,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.benchmark:benchmark-common:1.2.2")
     implementation("com.google.android.material:material:1.11.0")
+    implementation(project(":coredata"))
 
     // CUSTOM IMPLEMENTATIONS START ----->
 
@@ -106,8 +107,6 @@ dependencies {
     retrofit()
     room()
     flipper()
-    implementation("androidx.security:security-crypto:1.1.0-alpha06") // encrypted shared preferences
-    implementation("androidx.datastore:datastore-preferences:1.0.0")  // data store preferences
 
     // https://coil-kt.github.io/coil/compose/
     implementation("io.coil-kt:coil-compose:2.5.0")
@@ -161,7 +160,7 @@ fun DependencyHandler.hilt() {
 
 fun DependencyHandler.retrofit() {
     val retrofitVersion = "2.9.0"
-    val okHttpVersion = "4.11.0"
+    val okHttpVersion = "4.12.0"
     val moshiVersion = "1.14.0"
 
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")

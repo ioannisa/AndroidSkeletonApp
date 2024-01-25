@@ -7,8 +7,8 @@ import com.example.democompose.data.model.Articles
 import com.example.democompose.data.model.domain.ArticleDomain
 import com.example.democompose.data.model.domain.mapArticleToDomain
 import com.example.democompose.manager.CredentialManager
-import com.example.democompose.network.operations.NetworkOperations
-import com.example.democompose.network.operations.NetworkResult
+import eu.anifantakis.mod.coredata.network.operations.NetworkOperations
+import eu.anifantakis.mod.coredata.network.operations.NetworkResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext

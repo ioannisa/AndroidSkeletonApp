@@ -1,4 +1,4 @@
-package com.example.democompose.utils
+package eu.anifantakis.mod.coredata
 
 sealed class RepositoryResponse<T>(
     val data: T? = null,

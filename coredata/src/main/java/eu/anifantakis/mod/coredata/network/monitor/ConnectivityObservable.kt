@@ -1,4 +1,4 @@
-package com.example.democompose.network.monitor
+package eu.anifantakis.mod.coredata.network.monitor
 
 import kotlinx.coroutines.flow.Flow
 
