@@ -35,12 +35,23 @@ class ArticlesViewModel @Inject constructor(
                 // for demo here I expose "success" and "error". You can remove the "apply" statement if you want
                 // since "articles" is exposed directly from the repo, but it is useful to do additional jobs when
                 // finished with success or error directly with callback here
-                articlesManager.query("Tesla", fetchFromDate, "publishedAt").collectLatest { result ->
+                articlesManager.queryWithCallback("Tesla", fetchFromDate, "publishedAt").collectLatest { result ->
                     when (result) {
                         is RepositoryResponse.Error   -> { Timber.e("ERROR: ${result.message}") }
                         is RepositoryResponse.Success -> { Timber.d("SUCCESS - Results: ${result.data?.size ?: 0}") }
                     }
                 }
+            }
+        }
+    }
+
+    // the same as above but without a callback.  Here we just trust the manager exposes state-flows that we observe
+    // thus not care about grabbing some result
+    fun fetchArticlesWithoutCallback() {
+        val fetchFromDate = LocalDateTime.now().minusDays(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        viewModelScope.launch {
+            loadingPull {
+                articlesManager.queryWithoutCallback("Tesla", fetchFromDate, "publishedAt")
             }
         }
     }
@@ -60,7 +71,7 @@ class ArticlesViewModel @Inject constructor(
                 // for demo here I expose "success" and "error". You can remove the "apply" statement if you want
                 // since "articles" is exposed directly from the repo, but it is useful to do additional jobs when
                 // finished with success or error directly with callback here
-                articlesManager.query("Tesla", fetchFromDate, "publishedAt").collectLatest { result ->
+                articlesManager.queryWithCallback("Tesla", fetchFromDate, "publishedAt").collectLatest { result ->
                     when (result) {
                         is RepositoryResponse.Error   -> { Timber.e("ERROR: ${result.message}") }
                         is RepositoryResponse.Success -> { Timber.d("SUCCESS - Results: ${result.data?.size ?: 0}") }

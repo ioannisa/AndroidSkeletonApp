@@ -16,7 +16,8 @@ interface ArticlesManager {
     val articles: StateFlow<List<ArticleDomain>>
     val selectedArticle: State<ArticleDomain?>
 
-    suspend fun query(query: String, fromDate: String, sortBy: String): Flow<RepositoryResponse<List<ArticleDomain>>>
+    suspend fun queryWithoutCallback(query: String, fromDate: String, sortBy: String)
+    suspend fun queryWithCallback(query: String, fromDate: String, sortBy: String): Flow<RepositoryResponse<List<ArticleDomain>>>
     fun getSingleArticle(articleId: String)
     fun clearArticleSelection()
 }
@@ -29,21 +30,37 @@ class ArticlesManagerImpl @Inject constructor(private val articlesRepository: Ar
     private val _selectedArticle = mutableStateOf<ArticleDomain?>(null)
     override val selectedArticle: State<ArticleDomain?> = _selectedArticle
 
-    override suspend fun query(query: String, fromDate: String, sortBy: String): Flow<RepositoryResponse<List<ArticleDomain>>> = flow {
+    override suspend fun queryWithCallback(query: String, fromDate: String, sortBy: String): Flow<RepositoryResponse<List<ArticleDomain>>> = flow {
         articlesRepository.getDomainArticlesCached(query, fromDate, sortBy).collect { result ->
             when (result) {
                 is NetworkResult.Error -> {
-                    storeLocally(articles = result.data)
+                    saveArticlesToStateFlow(articles = result.data)
                     // send back to the caller only when error or success
                     emit(RepositoryResponse.Error(result.message ?: "", result.data as List<ArticleDomain>))
                 }
                 is NetworkResult.Loading -> {
-                    storeLocally(articles = result.data)
+                    saveArticlesToStateFlow(articles = result.data)
                 }
                 is NetworkResult.Success -> {
-                    storeLocally(articles = result.data)
+                    saveArticlesToStateFlow(articles = result.data)
                     // emit back to the caller only when error or success
                     emit(RepositoryResponse.Success(result.data as List<ArticleDomain>))
+                }
+            }
+        }
+    }
+
+    override suspend fun queryWithoutCallback(query: String, fromDate: String, sortBy: String) {
+        articlesRepository.getDomainArticlesCached(query, fromDate, sortBy).collect { result ->
+            when (result) {
+                is NetworkResult.Error -> {
+                    saveArticlesToStateFlow(articles = result.data)
+                }
+                is NetworkResult.Loading -> {
+                    saveArticlesToStateFlow(articles = result.data)
+                }
+                is NetworkResult.Success -> {
+                    saveArticlesToStateFlow(articles = result.data)
                 }
             }
         }
@@ -53,7 +70,7 @@ class ArticlesManagerImpl @Inject constructor(private val articlesRepository: Ar
         _selectedArticle.value = null
     }
 
-    private fun storeLocally(articles: List<ArticleDomain>?) {
+    private fun saveArticlesToStateFlow(articles: List<ArticleDomain>?) {
         articles?.let { _articles.value = articles.ifEmpty { emptyList() } }
     }
 
