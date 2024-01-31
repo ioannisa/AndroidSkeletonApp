@@ -18,11 +18,8 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.democompose.R
-import com.example.democompose.ScaffoldViewModel
 import com.example.democompose.views.base.LifecycleConfig
 import com.example.democompose.views.base.ScreenWithLoadingIndicator
 import com.example.democompose.views.base.TopAppBarConfig
@@ -31,13 +28,13 @@ import com.example.democompose.views.base.TopAppBarConfig
 fun DetailView(
     articleId: String,
     viewModel: ArticlesViewModel,
-    navController: NavHostController,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    onNavigateUp: () -> Unit
 ) {
     ScreenWithLoadingIndicator(
         topAppBarConfig = TopAppBarConfig(
             title = "Article Details",
-            onBackPress = { navController.navigateUp() }
+            onBackPress = { onNavigateUp() }
         ),
         lifecycleConfig = LifecycleConfig(
             onStart = { viewModel.retrieveArticleWithId(articleId) }

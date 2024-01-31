@@ -27,24 +27,23 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.democompose.R
 import com.example.democompose.data.model.domain.ArticleDomain
 import com.example.democompose.navigation.Destination
+import com.example.democompose.navigation.NavEvent
 import com.example.democompose.views.base.LifecycleConfig
 import com.example.democompose.views.base.LoadingConfig
-import com.example.democompose.views.base.ScreenWithLoadingIndicator
 import com.example.democompose.views.base.PullToRefreshList
+import com.example.democompose.views.base.ScreenWithLoadingIndicator
 import com.example.democompose.views.base.TopAppBarConfig
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MasterView(
-    navController: NavHostController,
     viewModel: ArticlesViewModel,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    onNavigateToDetailScreen: (NavEvent.Navigate) -> Unit
 ) {
     val isLoading by viewModel.isLoading.collectAsState()
     val isLoadingPUll by viewModel.isLoadingPull.collectAsState()
@@ -90,16 +89,13 @@ fun MasterView(
                                     article = article,
                                     modifier = Modifier
                                         .clickable {
-                                            navController.navigate(
-                                                Destination.Detail.makeRoute(
-                                                    article.id
-                                                )
-                                            )
+                                            onNavigateToDetailScreen(NavEvent.Navigate(Destination.Detail.makeRoute(article.id)))
                                         }
                                         .background(MaterialTheme.colorScheme.surface)
                                         .fillMaxWidth()
                                         .graphicsLayer {
-                                            alpha = if (viewModel.selectedArticle.value == article) 0f else 1f
+                                            alpha =
+                                                if (viewModel.selectedArticle.value == article) 0f else 1f
                                         }
                                 )
                             })

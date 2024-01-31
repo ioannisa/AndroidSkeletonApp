@@ -1,6 +1,5 @@
 package com.example.democompose.navigation
 
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,8 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -66,7 +63,7 @@ fun ApplicationScaffold(scaffoldViewModel: ScaffoldViewModel = hiltViewModel(Loc
             ) {
                 composable(Destination.Master.route) {
                     val viewModel = it.sharedViewModel<ArticlesViewModel>(navController)
-                    MasterView(navController = navController, paddingValues = paddingValues, viewModel = viewModel)
+                    MasterView(paddingValues = paddingValues, viewModel = viewModel, onNavigateToDetailScreen = navController::navigate )
                 }
 
                 composable(Destination.Detail.route) {
@@ -74,7 +71,7 @@ fun ApplicationScaffold(scaffoldViewModel: ScaffoldViewModel = hiltViewModel(Loc
                     val viewModel = it.sharedViewModel<ArticlesViewModel>(navController)
 
                     articleId?.let {
-                        DetailView(articleId = articleId, navController = navController, viewModel = viewModel, paddingValues = paddingValues)
+                        DetailView(articleId = articleId, viewModel = viewModel, paddingValues = paddingValues, onNavigateUp = navController::navigateUp)
                     }
                 }
             }
