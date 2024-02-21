@@ -65,12 +65,23 @@ abstract class NetworkOperations () {
         }
     }
 
+    /**
+     * Performs a network operation with caching and domain mapping. This function fetches data from a local cache before attempting a network request. If the cache is empty or the caller wishes to refresh data, it proceeds with the network call, updates the cache with the new data, and optionally refetches it from the cache to ensure consistency. The data is then mapped from the cache or API to a domain-specific model before being emitted.
+     *
+     * @param cacheFetch A suspend function to fetch cached data.
+     * @param apiRequest A suspend function to perform the API request.
+     * @param cacheUpdate A suspend function to update the cache with new data from the API.
+     * @param cacheRefetch A suspend function to refetch data from the cache after updating it.
+     * @param cacheToDomain A function to map data from the cache to a domain-specific model.
+     * @param onFetchFailed A lambda function that is invoked if the network request fails.
+     * @return Flow<NetworkResult<DOMAIN>> A flow that emits loading, success, and error states of the network operation with domain-specific data.
+     */
     protected suspend fun <API, CACHED, DOMAIN> netopCachedDomain(
         cacheFetch: (suspend () -> Flow<CACHED>),
         apiRequest: suspend () -> Response<API>,
         cacheUpdate: (suspend (API) -> Unit),
         cacheRefetch: (suspend () -> Flow<CACHED>),
-        cacheToDomain: ((CACHED) -> DOMAIN)? = null,
+        cacheToDomain: ((CACHED) -> DOMAIN),
         onFetchFailed: (Throwable) -> Unit = { }
     ): Flow<NetworkResult<DOMAIN>> =
         performNetworkOperation(
@@ -82,7 +93,14 @@ abstract class NetworkOperations () {
             onFetchFailed = onFetchFailed
         )
 
-
+    /**
+     * Performs a network operation without caching but with domain mapping. This function directly performs a network request and maps the API response to a domain-specific model before emitting the result. It is suitable for cases where caching is not required or applicable.
+     *
+     * @param apiRequest A suspend function to perform the API request.
+     * @param apiToDomain A function to map data from the API to a domain-specific model.
+     * @param onFetchFailed A lambda function that is invoked if the network request fails.
+     * @return Flow<NetworkResult<DOMAIN>> A flow that emits loading, success, and error states of the network operation with domain-specific data.
+     */
     protected suspend fun <API, DOMAIN> netopDomain(
         apiRequest: suspend () -> Response<API>,
         apiToDomain: ((API) -> DOMAIN),
@@ -103,7 +121,13 @@ abstract class NetworkOperations () {
             onFetchFailed = onFetchFailed
         )
 
-
+    /**
+     * Performs a basic network operation without caching or domain mapping. This function is the most straightforward, directly performing a network request and emitting the raw API response. It is suitable for cases where the raw API response is required without any modifications or mapping.
+     *
+     * @param apiRequest A suspend function to perform the API request.
+     * @param onFetchFailed A lambda function that is invoked if the network request fails.
+     * @return Flow<NetworkResult<API>> A flow that emits loading, success, and error states of the raw network operation.
+     */
     private suspend fun <R, D> FlowCollector<NetworkResult<D>>.emitDomainData(headers: Headers? = null, data: R, domainMapper: ((R) -> D)?) {
         val emitData: NetworkResult<D> = if (domainMapper != null) {
             NetworkResult.Success(domainMapper(data), headers)

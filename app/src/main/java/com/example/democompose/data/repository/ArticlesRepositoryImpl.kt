@@ -51,7 +51,7 @@ class ArticlesRepositoryImpl @Inject constructor(
     // simple example with only network api call (no-cache)
     override suspend fun getDomainArticlesNoCache(query: String, fromDate: String, sortBy: String): Flow<NetworkResult<List<ArticleDomain>>> {
         return withContext(coroutineDispatcher) {
-            netopDomain (
+            netopDomain <ArticlesRaw, List<ArticleDomain>> (
                 apiRequest = {
                     newsAPI.getNews(
                         query,
@@ -73,7 +73,13 @@ class ArticlesRepositoryImpl @Inject constructor(
     override suspend fun getDomainArticlesCached(query: String, fromDate: String, sortBy: String): Flow<NetworkResult<List<ArticleDomain>>> {
         return withContext(coroutineDispatcher) {
 
-            netopCachedDomain  (
+            // the three types don't need explicit declaration, they can be obtained automatically
+            //
+            // <ArticlesRaw>:         auto-obtained by the apiRequest (retrofit Response type)
+            // <List<ArticleDB>>:     auto-obtained by the cacheFetch (room return type)
+            // <List<ArticleDomain>>: auto-obtained by the return type of the host function's NetworkResult
+
+            netopCachedDomain <ArticlesRaw, List<ArticleDB>, List<ArticleDomain>> (
                 cacheFetch = { newsArticleDao.getArticles() },
                 apiRequest = {
                     newsAPI.getNews(
