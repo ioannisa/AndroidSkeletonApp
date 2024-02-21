@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.concurrent.atomic.AtomicInteger
 
-class ObservableLoadingInteger(initialValue: Int) {
+class ObservableLoadingInteger(initialValue: Int = 0) {
     private val _value = MutableStateFlow(initialValue)
     val value: StateFlow<Int> = _value.asStateFlow()
 
@@ -18,7 +18,8 @@ class ObservableLoadingInteger(initialValue: Int) {
     }
 
     fun decrementAndGet(): Int {
-        val newValue = atomicInteger.decrementAndGet()
+        // decrement to newValue if counter more than 0 else stay at 0
+        val newValue = if (atomicInteger.get() == 0) atomicInteger.get() else atomicInteger.decrementAndGet()
         _value.value = newValue
         return newValue
     }

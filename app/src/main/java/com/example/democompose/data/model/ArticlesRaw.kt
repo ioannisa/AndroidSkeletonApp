@@ -4,9 +4,9 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class Articles(
+data class ArticlesRaw(
     @Json(name = "articles")
-    val articles: List<Article>?,
+    val articles: List<ArticleRaw>?,
 
     @Json(name = "status")
     val status: String,

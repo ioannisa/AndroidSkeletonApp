@@ -1,5 +1,6 @@
 package com.example.democompose.views.base
 
+import androidx.annotation.OpenForTesting
 import androidx.lifecycle.ViewModel
 import com.example.democompose.utils.ObservableLoadingInteger
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,9 +9,16 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
-abstract class BaseViewModel : ViewModel() {
+abstract class BaseViewModel constructor() : ViewModel() {
 
     @Inject protected lateinit var loadingCounter: ObservableLoadingInteger
+    // Method to manually inject ObservableLoadingInteger for testing
+
+    @OpenForTesting
+    fun testInjects(loadingCounter: ObservableLoadingInteger) {
+        this.loadingCounter = loadingCounter
+    }
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 

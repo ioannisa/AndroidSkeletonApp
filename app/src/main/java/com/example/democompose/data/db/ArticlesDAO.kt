@@ -4,14 +4,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.democompose.data.model.Article
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ArticlesDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveArticles(articles: List<Article>)
+    suspend fun saveArticles(articles: List<ArticleDB>)
 
     @Query(value = "DELETE FROM article")
     suspend fun deleteAllArticles()
@@ -20,5 +19,5 @@ interface ArticlesDAO {
     suspend fun deleteArticlesNotIn(articleIds: List<String>)
 
     @Query(value = "SELECT * FROM article")
-    fun getArticles(): Flow<List<Article>>
+    fun getArticles(): Flow<List<ArticleDB>>
 }

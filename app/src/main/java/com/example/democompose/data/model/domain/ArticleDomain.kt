@@ -1,8 +1,8 @@
 package com.example.democompose.data.model.domain
 
 import androidx.compose.runtime.Immutable
-import com.example.democompose.data.model.Article
-import java.util.UUID
+import com.example.democompose.data.db.ArticleDB
+import com.example.democompose.data.model.ArticleRaw
 import kotlin.math.abs
 
 // demo for domain
@@ -27,15 +27,33 @@ data class ArticleDomain(
     }
 }
 
-fun mapArticleToDomain(article: Article): ArticleDomain {
-    return ArticleDomain(
-        id = abs(article.url.hashCode()).toString(),
-        url = article.url,
-        author = article.author,
-        content = article.content,
-        publishedAt = article.publishedAt,
-        title = article.title,
-        urlToImage = article.urlToImage
+
+// MAPPERS
+fun ArticleRaw.toDb(): ArticleDB {
+    return ArticleDB(
+        url = this.url,
+        author = this.author,
+        content = this.content,
+        description = this.description,
+        publishedAt = this.publishedAt,
+        title = this.title,
+        urlToImage = this.urlToImage
     )
 }
 
+fun ArticleDB.toDomain(): ArticleDomain {
+    return ArticleDomain(
+        id = abs(this.url.hashCode()).toString(),
+        url = this.url,
+        author = this.author,
+        content = this.content,
+        publishedAt = this.publishedAt,
+        title = this.title,
+        urlToImage = this.urlToImage
+    )
+}
+
+fun ArticleRaw.toDomain(): ArticleDomain {
+    val articleDB = this.toDb()
+    return articleDB.toDomain()
+}

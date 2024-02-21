@@ -1,16 +1,20 @@
 package com.example.democompose.data.repository
 
 import com.example.democompose.data.api.NewsAPI
+import com.example.democompose.data.db.ArticleDB
 import com.example.democompose.data.db.ArticlesDAO
-import com.example.democompose.data.model.Article
-import com.example.democompose.data.model.Articles
+import com.example.democompose.data.model.ArticleRaw
+import com.example.democompose.data.model.ArticlesRaw
 import com.example.democompose.data.model.domain.ArticleDomain
-import com.example.democompose.data.model.domain.mapArticleToDomain
+import com.example.democompose.data.model.domain.toDb
+import com.example.democompose.data.model.domain.toDomain
 import com.example.democompose.manager.CredentialManager
 import eu.anifantakis.mod.coredata.network.operations.NetworkOperations
 import eu.anifantakis.mod.coredata.network.operations.NetworkResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -23,49 +27,23 @@ class ArticlesRepositoryImpl @Inject constructor(
 
     private val coroutineDispatcher = Dispatchers.IO
 
-
-    // simple example returning the original mapped json result from network
-    suspend fun getNetworkArticlesNoCache(query: String, fromDate: String, sortBy: String): Flow<NetworkResult<List<Article>>> {
-        return withContext(coroutineDispatcher) {
-
-            performNetworkOperation <Articles, Articles, List<Article>>(
-                apiRequest = {
-                    newsAPI.getNews(
-                        query,
-                        fromDate,
-                        sortBy,
-                        credentialManager.getApiKey()
-                    )
-                },
-                processResponse = { response ->
-                    // return network response as is
-                    response
-                }
-                // omit domainMapper as in this example we are returning directly without domain mapping
-                // Omit cacheUpdate and cacheRefetch parameters since caching is not used
-            )
-        }
+    suspend fun offlineArticlesFlow(): Flow<List<ArticleDB>> {
+        return newsArticleDao.getArticles()
     }
 
-    // simple example with only network api call (no-cache, no domain)
-    override suspend fun getArticlesNoCache(query: String, fromDate: String, sortBy: String): Flow<NetworkResult<List<Article>>> {
+    // simple example returning the original mapped json result from network
+    override suspend fun getNetworkArticlesNoCache(query: String, fromDate: String, sortBy: String): Flow<NetworkResult<ArticlesRaw>> {
         return withContext(coroutineDispatcher) {
 
-            performNetworkOperation<Articles, List<Article>, List<Article>>(
+            netop <ArticlesRaw> (
                 apiRequest = {
-                    newsAPI.getNews(
+                     newsAPI.getNews(
                         query,
                         fromDate,
                         sortBy,
                         credentialManager.getApiKey()
                     )
-                },
-                processResponse = { networResponse ->
-                    // map or transform to an intermediate type used for repository operations
-                    networResponse.articles ?: emptyList() // Directly process the response
-                },
-                // omit domainMapper as in this example we are returning directly without domain mapping
-                // Omit cacheUpdate and cacheRefetch parameters since caching is not used
+                }
             )
         }
     }
@@ -73,7 +51,7 @@ class ArticlesRepositoryImpl @Inject constructor(
     // simple example with only network api call (no-cache)
     override suspend fun getDomainArticlesNoCache(query: String, fromDate: String, sortBy: String): Flow<NetworkResult<List<ArticleDomain>>> {
         return withContext(coroutineDispatcher) {
-            performNetworkOperation(
+            netopDomain (
                 apiRequest = {
                     newsAPI.getNews(
                         query,
@@ -82,16 +60,11 @@ class ArticlesRepositoryImpl @Inject constructor(
                         credentialManager.getApiKey()
                     )
                 },
-                processResponse = { networkResponse ->
-                    // map or transform to an intermediate type used for repository operations
-                    networkResponse.articles ?: emptyList() // Directly process the response
-                },
                 // domainMapper is optional; it's used to map the result to a domain object
-                domainMapper = { articlesList ->
+                apiToDomain = { articlesList ->
                     // map to domain object
-                    articlesList.map { mapArticleToDomain(it) }
+                    articlesList.articles?.map { it.toDomain() } ?: emptyList()
                 }
-                // Omit cacheUpdate and cacheRefetch parameters since caching is not used
             )
         }
     }
@@ -99,7 +72,9 @@ class ArticlesRepositoryImpl @Inject constructor(
     // full example with cache and exception handling
     override suspend fun getDomainArticlesCached(query: String, fromDate: String, sortBy: String): Flow<NetworkResult<List<ArticleDomain>>> {
         return withContext(coroutineDispatcher) {
-            performNetworkOperation<Articles, List<Article>, List<ArticleDomain>>  (
+
+            netopCachedDomain  (
+                cacheFetch = { newsArticleDao.getArticles() },
                 apiRequest = {
                     newsAPI.getNews(
                         query,
@@ -108,18 +83,19 @@ class ArticlesRepositoryImpl @Inject constructor(
                         credentialManager.getApiKey()
                     )
                 },
-                cacheFetch = { newsArticleDao.getArticles() },
                 cacheUpdate = { networkResponse ->
                     // Process the response and update the cache
-                    val fetchedArticles = networkResponse.articles ?: emptyList()
-                    newsArticleDao.saveArticles(fetchedArticles) // Save fetched articles to database
+                    val networkArticles = networkResponse.articles ?: emptyList()
 
-                    val fetchedArticleUrls = fetchedArticles.map { it.url }
+                    val dbArticles = networkArticles.map {it.toDb() }
+                    newsArticleDao.saveArticles(dbArticles) // Save fetched articles to database
+
+                    val fetchedArticleUrls = networkArticles.map { it.url }
                     newsArticleDao.deleteArticlesNotIn(fetchedArticleUrls) // Keep only fetched articles in database
                 },
                 cacheRefetch = { newsArticleDao.getArticles() }, // Refetch from cache after network update
-                domainMapper = { articlesList ->
-                     articlesList.map { mapArticleToDomain(it) }
+                cacheToDomain = { articlesList ->
+                     articlesList.map { it.toDomain() }
                 },
                 onFetchFailed = { exception ->
                     Timber.e(exception)

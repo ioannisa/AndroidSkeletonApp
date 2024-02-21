@@ -1,13 +1,10 @@
 package com.example.democompose.data.model
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-@Entity(tableName = "article")
 @JsonClass(generateAdapter = true)
-data class Article(
+data class ArticleRaw(
 
     @Json(name = "author")
     val author: String?,
@@ -24,8 +21,6 @@ data class Article(
     @Json(name = "title")
     val title: String,
 
-    @PrimaryKey
-    @ColumnInfo(name = "url") // custom columns in database (just for reference)
     @Json(name = "url")
     val url: String,
 

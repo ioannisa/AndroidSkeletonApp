@@ -3,6 +3,7 @@ package com.example.democompose.manager
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.example.democompose.data.model.domain.ArticleDomain
+import com.example.democompose.data.model.domain.toDomain
 import com.example.democompose.data.repository.ArticlesRepository
 import eu.anifantakis.mod.coredata.RepositoryResponse
 import eu.anifantakis.mod.coredata.network.operations.NetworkResult
@@ -31,6 +32,27 @@ class ArticlesManagerImpl @Inject constructor(private val articlesRepository: Ar
     override val selectedArticle: State<ArticleDomain?> = _selectedArticle
 
     override suspend fun queryWithCallback(query: String, fromDate: String, sortBy: String): Flow<RepositoryResponse<List<ArticleDomain>>> = flow {
+
+//        articlesRepository.getNetworkArticlesNoCache(query, fromDate, sortBy).collect { result ->
+//            val domainArticles = result.data?.articles?.map { it.toDomain() }
+//
+//            when (result) {
+//                is NetworkResult.Error -> {
+//                    saveArticlesToStateFlow(articles = domainArticles )
+//                    // send back to the caller only when error or success
+//                    emit(RepositoryResponse.Error(result.message ?: "", domainArticles as List<ArticleDomain>))
+//                }
+//                is NetworkResult.Loading -> {
+//                    saveArticlesToStateFlow(articles = domainArticles)
+//                }
+//                is NetworkResult.Success -> {
+//                    saveArticlesToStateFlow(articles = domainArticles)
+//                    // emit back to the caller only when error or success
+//                    emit(RepositoryResponse.Success(domainArticles as List<ArticleDomain>))
+//                }
+//            }
+//        }
+
         articlesRepository.getDomainArticlesCached(query, fromDate, sortBy).collect { result ->
             when (result) {
                 is NetworkResult.Error -> {

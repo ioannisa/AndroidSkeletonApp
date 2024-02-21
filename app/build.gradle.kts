@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    id("de.mannodermaus.android-junit5") version "1.10.0.0"
 }
 
 android {
@@ -97,7 +98,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.benchmark:benchmark-common:1.2.2")
+    implementation("androidx.benchmark:benchmark-common:1.2.3")
     implementation("com.google.android.material:material:1.11.0")
     implementation(project(":coredata"))
 
@@ -118,7 +119,7 @@ dependencies {
     //implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVer")
 
     // required for pull to refresh
-    implementation("androidx.compose.material3:material3-adaptive-android:1.0.0-alpha04")
+    implementation("androidx.compose.material3:material3-adaptive-android:1.0.0-alpha06")
 
     // shared element transitions library
     // https://github.com/skydoves/Orbital
@@ -136,7 +137,7 @@ dependencies {
 
 // https://dagger.dev/hilt/gradle-setup.html
 fun DependencyHandler.hilt() {
-    val hiltVersion = "2.48.1"
+    val hiltVersion = "2.50"
 
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     ksp("com.google.dagger:hilt-android-compiler:$hiltVersion")
@@ -172,6 +173,9 @@ fun DependencyHandler.retrofit() {
 
     implementation("com.squareup.okhttp3:okhttp:$okHttpVersion")
     implementation("com.squareup.okhttp3:logging-interceptor:$okHttpVersion")
+
+    // mock (offline) web server for retrofit tests
+    testImplementation("com.squareup.okhttp3:mockwebserver:$okHttpVersion")
 }
 
 // https://developer.android.com/jetpack/androidx/releases/room

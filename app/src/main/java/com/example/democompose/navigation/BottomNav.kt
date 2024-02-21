@@ -6,7 +6,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
@@ -41,7 +41,7 @@ data class BottomNavigationItem(
 @Composable
 fun BottomNav(navController: NavHostController) {
 
-    var navigationSelectedItem by remember { mutableStateOf(0) }
+    var navigationSelectedItem by remember { mutableIntStateOf(0) }
 
     NavigationBar(tonalElevation = 4.dp) {
         BottomNavigationItem().bottomNavigationItems().forEachIndexed {index,navigationItem ->
