@@ -22,7 +22,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -48,6 +47,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -141,6 +142,16 @@ data class LifecycleConfig(
     val onAny: () -> Unit = {},
 )
 
+data class ExtraPaddings(
+    val top: Dp = 0.dp,
+    val start: Dp = 0.dp,
+    val end: Dp = 0.dp,
+    val bottom: Dp = 0.dp
+) {
+    constructor(all: Dp) : this(top = all, start = all, end = all, bottom = all)
+    constructor(horizontal: Dp, vertical: Dp) : this(top = vertical, start = horizontal, end = horizontal, bottom = vertical)
+}
+
 @Composable
 fun ScreenWithLoadingIndicator (
     topAppBarConfig: TopAppBarConfig = TopAppBarConfig(),
@@ -149,6 +160,7 @@ fun ScreenWithLoadingIndicator (
 
     scaffoldViewModel: ScaffoldViewModel = hiltViewModel(LocalContext.current.findActivity()),
     paddingValues: PaddingValues,
+    extraPaddings: ExtraPaddings = ExtraPaddings(),
 
     content: @Composable () -> Unit
 ) {
@@ -177,10 +189,10 @@ fun ScreenWithLoadingIndicator (
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(
-            top = paddingValues.calculateTopPadding(),
-            start = paddingValues.calculateStartPadding(layoutDirection = LocalLayoutDirection.current),
-            end = paddingValues.calculateEndPadding(layoutDirection = LocalLayoutDirection.current),
-            bottom = paddingValues.calculateBottomPadding()
+            top = paddingValues.calculateTopPadding() + extraPaddings.top,
+            start = paddingValues.calculateStartPadding(layoutDirection = LocalLayoutDirection.current) + extraPaddings.start,
+            end = paddingValues.calculateEndPadding(layoutDirection = LocalLayoutDirection.current) + extraPaddings.end,
+            bottom = paddingValues.calculateBottomPadding() + extraPaddings.bottom
         )) {
         Column {
             //MyTopAppBar(title = topAppBarTitle, onBackPress = topAppBarOnBackPress)

@@ -1,4 +1,4 @@
-package com.example.democompose.views
+package com.example.democompose.views.articles
 
 import androidx.lifecycle.viewModelScope
 import com.example.democompose.data.model.domain.ArticleDomain

@@ -1,15 +1,12 @@
 package com.example.democompose.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
@@ -19,13 +16,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.example.democompose.ScaffoldViewModel
-import com.example.democompose.views.ArticlesViewModel
-import com.example.democompose.views.DetailView
-import com.example.democompose.views.MasterView
-import com.example.democompose.views.SampleViewModel
+import com.example.democompose.views.articles.ArticlesViewModel
+import com.example.democompose.views.articles.DetailView
+import com.example.democompose.views.articles.MasterView
 import com.example.democompose.views.base.BaseViewModel
 import com.example.democompose.views.base.MyTopAppBar
 import com.example.democompose.views.base.findActivity
+import com.example.democompose.views.sample.SampleScreen
 
 // Routes for the nested navigation graphs
 sealed class NestedNavGraph(val route: String) {
@@ -81,7 +78,7 @@ fun ApplicationScaffold(scaffoldViewModel: ScaffoldViewModel = hiltViewModel(Loc
                 route = NestedNavGraph.StoredArticles.route
             ) {
                 composable(Destination.FirebaseScreen.route) {
-                    FirebaseScreen(paddingValues)
+                    SampleScreen(paddingValues)
                 }
             }
         }
@@ -98,19 +95,4 @@ inline fun <reified T : BaseViewModel> NavBackStackEntry.sharedViewModel(navCont
         navController.getBackStackEntry(navGraphRoute)
     }
     return hiltViewModel(parentEntry)
-}
-
-
-@Composable
-fun FirebaseScreen(
-    paddingValues: PaddingValues,
-    viewModel: SampleViewModel = hiltViewModel()
-) {
-    Text("Hello Firebase ${viewModel.selectedNumber.value}",
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                top = paddingValues.calculateTopPadding()
-            )
-    )
 }

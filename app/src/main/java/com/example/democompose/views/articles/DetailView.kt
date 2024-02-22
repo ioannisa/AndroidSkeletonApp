@@ -1,4 +1,4 @@
-package com.example.democompose.views
+package com.example.democompose.views.articles
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
