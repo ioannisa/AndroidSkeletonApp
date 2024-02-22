@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.flow
 import okhttp3.Headers
 import retrofit2.Response
 import timber.log.Timber
+import java.io.IOException
 
 abstract class NetworkOperations () {
     private suspend fun <API, CACHED, DOMAIN> performNetworkOperation(
@@ -52,15 +53,15 @@ abstract class NetworkOperations () {
                         }
                     }
                 } else {
-                    emit(NetworkResult.Error<DOMAIN>("BaseRepository - No data found", null))
+                    emit(NetworkResult.Error<DOMAIN>(exception = null, message = "BaseRepository - No data found", headers =  null))
                 }
             } else {
-                emit(NetworkResult.Error<DOMAIN>(message = response.message(), headers = response.headers()))
+                emit(NetworkResult.Error<DOMAIN>(exception = null, message = response.message(), headers = response.headers()))
                 Timber.e("BaseRepository - Network Fetch (Fail) - ${response.message()}")
             }
         } catch (e: Exception) {
             onFetchFailed(e)
-            emit(NetworkResult.Error(e.localizedMessage ?: "Unknown error occurred", null))
+            emit(NetworkResult.Error(exception = e, message = e.message ?: "", headers = null))
             Timber.e("BaseRepository - Network Fetch (Fail) - Unknown Error")
         }
     }

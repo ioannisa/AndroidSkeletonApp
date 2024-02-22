@@ -121,9 +121,11 @@ dependencies {
     // required for pull to refresh
     implementation("androidx.compose.material3:material3-adaptive-android:1.0.0-alpha06")
 
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
+
     // shared element transitions library
     // https://github.com/skydoves/Orbital
-    implementation("com.github.skydoves:orbital:0.3.3")
+    implementation("com.github.skydoves:orbital:0.3.4")
     // <----- CUSTOM IMPLEMENTATIONS END
 
     testImplementation("junit:junit:4.13.2")
@@ -162,7 +164,7 @@ fun DependencyHandler.hilt() {
 fun DependencyHandler.retrofit() {
     val retrofitVersion = "2.9.0"
     val okHttpVersion = "4.12.0"
-    val moshiVersion = "1.14.0"
+    val moshiVersion = "1.15.1"
 
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
 
@@ -208,7 +210,7 @@ fun DependencyHandler.room() {
 }
 
 fun DependencyHandler.flipper() {
-    val flipperVersion = "0.237.0"
+    val flipperVersion = "0.247.0"
 
     debugImplementation("com.facebook.flipper:flipper:$flipperVersion")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:$flipperVersion")

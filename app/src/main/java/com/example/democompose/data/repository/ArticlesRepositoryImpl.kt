@@ -3,7 +3,6 @@ package com.example.democompose.data.repository
 import com.example.democompose.data.api.NewsAPI
 import com.example.democompose.data.db.ArticleDB
 import com.example.democompose.data.db.ArticlesDAO
-import com.example.democompose.data.model.ArticleRaw
 import com.example.democompose.data.model.ArticlesRaw
 import com.example.democompose.data.model.domain.ArticleDomain
 import com.example.democompose.data.model.domain.toDb
@@ -13,8 +12,6 @@ import eu.anifantakis.mod.coredata.network.operations.NetworkOperations
 import eu.anifantakis.mod.coredata.network.operations.NetworkResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
