@@ -1,4 +1,4 @@
-package com.example.democompose
+package com.example.democompose.views.base.scaffold
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +18,6 @@ class ScaffoldViewModel @Inject constructor(): ViewModel() {
         _title.value = title
         _onBackPress.value = onBackPress
     }
-
 
     private val _topBarHeight = MutableStateFlow(0)
     val topBarHeight: StateFlow<Int> = _topBarHeight

@@ -1,9 +1,9 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("de.mannodermaus.android-junit5") version "1.10.0.0"
+    id("com.google.devtools.ksp")
 }
 
 android {

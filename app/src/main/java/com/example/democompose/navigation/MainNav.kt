@@ -1,27 +1,15 @@
 package com.example.democompose.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
-import com.example.democompose.ScaffoldViewModel
 import com.example.democompose.views.articles.ArticlesViewModel
 import com.example.democompose.views.articles.DetailView
 import com.example.democompose.views.articles.MasterView
-import com.example.democompose.views.base.BaseViewModel
-import com.example.democompose.views.base.MyTopAppBar
-import com.example.democompose.views.base.findActivity
+import com.example.democompose.views.base.scaffold.ApplicationScaffold
+import com.example.democompose.views.base.scaffold.sharedViewModel
 import com.example.democompose.views.sample.SampleScreen
 
 // Routes for the nested navigation graphs
@@ -43,16 +31,10 @@ sealed class Destination(val route: String) {
 }
 
 @Composable
-fun ApplicationScaffold(scaffoldViewModel: ScaffoldViewModel = hiltViewModel(LocalContext.current.findActivity())) {
+fun ComposeRoot() {
     val navController = rememberNavController()
 
-    val title by scaffoldViewModel.title.collectAsState()
-    val onBackPress by scaffoldViewModel.onBackPress.collectAsState()
-
-    Scaffold(
-        topBar = { MyTopAppBar(title, onBackPress) },
-        bottomBar = { BottomNav(navController) }
-    ) { paddingValues ->
+    ApplicationScaffold(navController = navController) { paddingValues ->
         NavHost(navController = navController, startDestination = "online_articles") {
             navigation(
                 startDestination = Destination.Master.route,
@@ -83,16 +65,4 @@ fun ApplicationScaffold(scaffoldViewModel: ScaffoldViewModel = hiltViewModel(Loc
             }
         }
     }
-}
-
-/**
- * Allow for shared view model within nested navigation
- */
-@Composable
-inline fun <reified T : BaseViewModel> NavBackStackEntry.sharedViewModel(navController: NavController): T {
-    val navGraphRoute = destination.parent?.route ?: return hiltViewModel()
-    val parentEntry = remember(this) {
-        navController.getBackStackEntry(navGraphRoute)
-    }
-    return hiltViewModel(parentEntry)
 }

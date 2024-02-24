@@ -14,7 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.democompose.navigation.ApplicationScaffold
+import com.example.democompose.navigation.ComposeRoot
 import com.example.democompose.ui.theme.DemoComposeTheme
 import com.example.democompose.utils.ObservableLoadingInteger
 import com.example.democompose.views.base.NoNetworkDialog
@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                     onContinueOffline = { showDialog = false },
                     onQuit = { this.finish() })
 
-                ApplicationScaffold()
+                ComposeRoot()
             }
         }
     }

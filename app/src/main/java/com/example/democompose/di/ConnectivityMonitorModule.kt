@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ConnectivityMonitorModule {
+object ConnectivityMonitorModule {
 
     @Singleton
     @Provides
