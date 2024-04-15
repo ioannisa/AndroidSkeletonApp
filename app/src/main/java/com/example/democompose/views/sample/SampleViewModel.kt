@@ -22,7 +22,7 @@ class SampleViewModel @Inject constructor() : BaseViewModel() {
     // instead of StateFlow we can return directly a state
     // it is private set so it is immutable to the outside, but mutable inside
     var stateNum by mutableIntStateOf(0)
-        private set
+
 
     // for StateFlow "private set" is not enough we use the Backing Property approach
     private var _stateFlowNum = MutableStateFlow<Int>(0)
@@ -36,7 +36,11 @@ class SampleViewModel @Inject constructor() : BaseViewModel() {
     private var channel = Channel<Int>()
 
 
+
     init {
+
+
+
         viewModelScope.launch {
             // from a channel we can observe things sent and act
             channel.consumeEach {

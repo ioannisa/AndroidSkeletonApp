@@ -58,7 +58,7 @@ class ArticlesManagerImpl @Inject constructor(private val articlesRepository: Ar
                 is NetworkResult.Error -> {
                     saveArticlesToStateFlow(articles = result.data)
                     // send back to the caller only when error or success
-                    emit(RepositoryResponse.Error(result.message ?: "", result.data as List<ArticleDomain>))
+                    emit(RepositoryResponse.Error(result.message ?: "", emptyList()))
                 }
                 is NetworkResult.Loading -> {
                     saveArticlesToStateFlow(articles = result.data)

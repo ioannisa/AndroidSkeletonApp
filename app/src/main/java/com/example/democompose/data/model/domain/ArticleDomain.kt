@@ -36,7 +36,7 @@ fun ArticleRaw.toDb(): ArticleDB {
         content = this.content,
         description = this.description,
         publishedAt = this.publishedAt,
-        title = this.title,
+        title = this.title ?: "",
         urlToImage = this.urlToImage
     )
 }

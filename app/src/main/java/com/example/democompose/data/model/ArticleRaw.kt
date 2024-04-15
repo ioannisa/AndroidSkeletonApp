@@ -19,7 +19,7 @@ data class ArticleRaw(
     val publishedAt: String,
 
     @Json(name = "title")
-    val title: String,
+    val title: String?,
 
     @Json(name = "url")
     val url: String,
