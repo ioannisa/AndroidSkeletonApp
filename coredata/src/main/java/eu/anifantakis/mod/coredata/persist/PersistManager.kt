@@ -13,36 +13,82 @@ class PersistManager(context: Context, keyAlias: String) {
 
     // Wrapper methods for SharedPreferencesManager
 
+    /**
+     * Encrypts and saves a value to SharedPreferences.
+     *
+     * @param key The key to store the value under.
+     * @param value The value to store.
+     */
     fun <T> encryptSharedPreference(key: String, value: T) {
         sharedPreferencesManager.put(key, value)
     }
 
+    /**
+     * Decrypts and retrieves a value from SharedPreferences.
+     *
+     * @param key The key to retrieve the value under.
+     * @param defaultValue The default value to return if the key does not exist.
+     */
     fun <T> decryptSharedPreference(key: String, defaultValue: T): T {
         return sharedPreferencesManager.get(key, defaultValue)
     }
 
+    /**
+     * Deletes a value from SharedPreferences.
+     *
+     * @param key The key to delete the value under.
+     */
     fun deleteSharedPreference(key: String) {
         sharedPreferencesManager.delete(key)
     }
 
     // Wrapper methods for DataStoreManager
 
+    /**
+     * Saves a value to DataStore.
+     *
+     * @param key The key to store the value under.
+     * @param value The value to store.
+     */
     suspend fun <T> putDataStorePreference(key: String, value: T) {
         dataStoreManager.put(key, value)
     }
 
+    /**
+     * Retrieves a value from DataStore.
+     *
+     * @param key The key to retrieve the value under.
+     * @param defaultValue The default value to return if the key does not exist.
+     */
     suspend fun <T : Any> getDataStorePreference(key: String, defaultValue: T): T {
         return dataStoreManager.get(key, defaultValue)
     }
 
+    /**
+     * Encrypts and Saves a value to DataStore.
+     *
+     * @param key The key to store the value under.
+     * @param value The value to store.
+     */
     suspend fun <T> encryptDataStorePreference(key: String, value: T) {
         dataStoreManager.putEncrypted(key, value)
     }
 
+    /**
+     * Decrypts and Retrieves a value from DataStore.
+     *
+     * @param key The key to retrieve the value under.
+     * @param defaultValue The default value to return if the key does not exist.
+     */
     suspend fun <T> decryptDataStorePreference(key: String, defaultValue: T): T {
         return dataStoreManager.getEncrypted(key, defaultValue)
     }
 
+    /**
+     * Deletes a value from DataStore.
+     *
+     * @param key The key to delete the value under.
+     */
     suspend fun deleteDataStorePreference(key: String) {
         dataStoreManager.delete(key)
     }
@@ -65,7 +111,18 @@ class PersistManager(context: Context, keyAlias: String) {
         }
     }
 
+    /**
+     * Uses Delegation to set and get encrypted SharedPreferences.  Key to the preference is the property name.
+     *
+     * @param defaultValue The default value to return if the key does not exist.
+     */
     fun <T> preference(defaultValue: T): EncryptedPreference<T> = EncryptedPreference(this, defaultValue)
 
+    /**
+     * Uses Delegation to set and get encrypted SharedPreferences.
+     *
+     * @param key The key to store the value under.
+     * @param defaultValue The default value to return if the key does not exist.
+     */
     fun <T> preference(key: String, defaultValue: T): EncryptedPreference<T> = EncryptedPreference(this, defaultValue, key)
 }

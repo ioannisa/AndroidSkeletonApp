@@ -64,6 +64,15 @@ class EncryptionManager(private val keyAlias: String) {
         return String(cipher.doFinal(encryptedBytes), StandardCharsets.UTF_8)
     }
 
+    /**
+     * Encrypt values into a string
+     *
+     * @param value The value to encrypt
+     *
+     * Accepted types
+     * Boolean, Int, Float, Long, String
+     * Other types will throw an IllegalArgumentException
+     */
     fun <T> encryptValue(value: T): String {
         val stringValue = when (value) {
             is Boolean, is Int, is Float, is Long, is String -> value.toString()
@@ -72,6 +81,16 @@ class EncryptionManager(private val keyAlias: String) {
         return Base64.encodeToString(encryptData(stringValue), Base64.DEFAULT)
     }
 
+    /**
+     * Decrypt a value using the provided default value if the decryption fails.
+     *
+     * @param encryptedValue The encrypted value to decrypt.
+     * @param defaultValue The default value to return if decryption fails.
+     *
+     * Accepted types
+     * Boolean, Int, Float, Long, String
+     * Other types will throw an IllegalArgumentException
+     */
     fun <T> decryptValue(encryptedValue: String, defaultValue: T): T {
         val decryptedString = decryptData(Base64.decode(encryptedValue, Base64.DEFAULT))
         return when (defaultValue) {
