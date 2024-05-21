@@ -1,4 +1,4 @@
-package eu.anifantakis.mod.coredata.persist
+package eu.anifantakis.lib.securepersist
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
@@ -8,7 +8,6 @@ import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
-
 
 class EncryptionManager(private val keyAlias: String) {
 

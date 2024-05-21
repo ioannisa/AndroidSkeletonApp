@@ -1,6 +1,6 @@
 package com.example.democompose.manager
 
-import eu.anifantakis.mod.coredata.persist.PersistManager
+import eu.anifantakis.lib.securepersist.PersistManager
 import javax.inject.Inject
 
 interface CredentialManager {

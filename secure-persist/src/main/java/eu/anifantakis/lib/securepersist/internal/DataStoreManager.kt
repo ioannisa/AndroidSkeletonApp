@@ -1,4 +1,4 @@
-package eu.anifantakis.mod.coredata.persist.internal
+package eu.anifantakis.lib.securepersist.internal
 
 import android.content.Context
 import androidx.datastore.preferences.core.Preferences
@@ -9,7 +9,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import eu.anifantakis.mod.coredata.persist.EncryptionManager
+import eu.anifantakis.lib.securepersist.EncryptionManager
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 

@@ -1,6 +1,5 @@
 package com.example.democompose.data.repository
 
-import com.example.democompose.data.model.ArticleRaw
 import com.example.democompose.data.model.ArticlesRaw
 import com.example.democompose.data.model.domain.ArticleDomain
 import eu.anifantakis.mod.coredata.network.operations.NetworkResult

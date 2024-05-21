@@ -1,4 +1,4 @@
-package eu.anifantakis.mod.coredata.persist.internal
+package eu.anifantakis.lib.securepersist.internal
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -6,7 +6,6 @@ import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import kotlin.reflect.KProperty
-
 
 internal class SharedPreferencesManager(context: Context) {
 

@@ -1,8 +1,8 @@
-package eu.anifantakis.mod.coredata.persist
+package eu.anifantakis.lib.securepersist
 
 import android.content.Context
-import eu.anifantakis.mod.coredata.persist.internal.DataStoreManager
-import eu.anifantakis.mod.coredata.persist.internal.SharedPreferencesManager
+import eu.anifantakis.lib.securepersist.internal.DataStoreManager
+import eu.anifantakis.lib.securepersist.internal.SharedPreferencesManager
 import kotlin.reflect.KProperty
 
 class PersistManager(context: Context, keyAlias: String) {

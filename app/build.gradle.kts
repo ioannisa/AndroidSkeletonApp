@@ -101,6 +101,7 @@ dependencies {
     implementation("androidx.benchmark:benchmark-common:1.2.4")
     implementation("com.google.android.material:material:1.12.0")
     implementation(project(":coredata"))
+    implementation(project(":secure-persist"))
 
     // CUSTOM IMPLEMENTATIONS START ----->
 

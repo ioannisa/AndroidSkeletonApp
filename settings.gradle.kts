@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 rootProject.name = "Demo Compose"
 include(":app")
 include(":coredata")
+include(":secure-persist")
