@@ -6,7 +6,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import eu.anifantakis.mod.coredata.EncryptedData
+import eu.anifantakis.mod.coredata.persist.EncryptionManager
+import eu.anifantakis.mod.coredata.persist.PersistManager
 import javax.inject.Singleton
 
 @Module
@@ -15,5 +16,9 @@ object EncryptionModule {
 
     @Provides
     @Singleton
-    fun provideEncryptedData(@ApplicationContext context: Context): EncryptedData = EncryptedData(context)
+    fun provideEncryptedPersistence(@ApplicationContext context: Context): PersistManager = PersistManager(context, "myKeyAlias")
+
+    @Provides
+    @Singleton
+    fun provideEncryptedManager(): EncryptionManager = EncryptionManager("myKeyAlias")
 }

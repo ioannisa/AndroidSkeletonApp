@@ -1,6 +1,6 @@
 package com.example.democompose.manager
 
-import eu.anifantakis.mod.coredata.EncryptedData
+import eu.anifantakis.mod.coredata.persist.PersistManager
 import javax.inject.Inject
 
 interface CredentialManager {
@@ -8,7 +8,7 @@ interface CredentialManager {
     fun getApiKey(): String
 }
 
-class CredentialManagerImpl @Inject constructor(private val encryptedData: EncryptedData): CredentialManager {
+class CredentialManagerImpl @Inject constructor(private val encryptedData: PersistManager): CredentialManager {
     private val apiKeyPref = "API_KEY"
 
     override fun setApiKey(apiKey: String) {
