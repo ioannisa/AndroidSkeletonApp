@@ -104,7 +104,7 @@ dependencies {
 
 
     //implementation(project(":secure-persist"))
-    implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.0-alpha2")
+    implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.0")
 
     // CUSTOM IMPLEMENTATIONS START ----->
 
