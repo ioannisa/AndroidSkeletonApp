@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import androidx.core.content.edit
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -16,6 +17,8 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import kotlinx.coroutines.flow.first
+import java.lang.UnsupportedOperationException
+import kotlin.reflect.KProperty
 
 class EncryptedData (private val context: Context) {
 
@@ -45,11 +48,36 @@ class EncryptedData (private val context: Context) {
         )
     }
 
-    fun encryptSharedPreference(key: String, value: String) {
-        sharedPreferences.edit().putString(key, value).apply()
+    fun <T> encryptSharedPreference(key: String, value: T) {
+        sharedPreferences.edit {
+            when (value) {
+                is Boolean  -> putBoolean(key, value).apply()
+                is Int      -> putInt(key, value).apply()
+                is Float    -> putFloat(key, value).apply()
+                is Long     -> putLong(key, value).apply()
+                is String   -> putString(key, value).apply()
+                else        -> throw UnsupportedOperationException()
+            }
+        }
     }
 
-    fun decryptSharedPreference(key: String, defaultValue: String? = null): String? {
+    fun decryptSharedPreference(key: String, defaultValue: Boolean): Boolean {
+        return sharedPreferences.getBoolean(key, defaultValue)
+    }
+
+    fun decryptSharedPreference(key: String, defaultValue: Int): Int {
+        return sharedPreferences.getInt(key, defaultValue)
+    }
+
+    fun decryptSharedPreference(key: String, defaultValue: Float): Float {
+        return sharedPreferences.getFloat(key, defaultValue)
+    }
+
+    fun decryptSharedPreference(key: String, defaultValue: Long): Long {
+        return sharedPreferences.getLong(key, defaultValue)
+    }
+
+    fun decryptSharedPreference(key: String, defaultValue: String?): String? {
         return sharedPreferences.getString(key, defaultValue)
     }
 
@@ -115,4 +143,57 @@ class EncryptedData (private val context: Context) {
         cipher.init(Cipher.DECRYPT_MODE, secretKey)
         return String(cipher.doFinal(encryptedData), StandardCharsets.UTF_8)
     }
+
+    /**
+     * Allows for Encrypted Shared data as property delegation
+     */
+    class EncryptedPreference<T>(
+        private val encryptedData: EncryptedData,
+        private val defaultValue: T,
+        private val key: String? = null
+    ) {
+        private val sharedPreferences = encryptedData.sharedPreferences
+
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+            val preferenceKey = key ?: property.name
+            return when (defaultValue) {
+                is Boolean -> sharedPreferences.getBoolean(preferenceKey, defaultValue as Boolean) as T
+                is Int -> sharedPreferences.getInt(preferenceKey, defaultValue as Int) as T
+                is Float -> sharedPreferences.getFloat(preferenceKey, defaultValue as Float) as T
+                is Long -> sharedPreferences.getLong(preferenceKey, defaultValue as Long) as T
+                is String -> sharedPreferences.getString(preferenceKey, defaultValue as String?) as T
+                else -> throw UnsupportedOperationException("Unsupported type")
+            }
+        }
+
+        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+            val preferenceKey = key ?: property.name
+            sharedPreferences.edit().apply {
+                when (value) {
+                    is Boolean -> putBoolean(preferenceKey, value)
+                    is Int -> putInt(preferenceKey, value)
+                    is Float -> putFloat(preferenceKey, value)
+                    is Long -> putLong(preferenceKey, value)
+                    is String -> putString(preferenceKey, value)
+                    else -> throw UnsupportedOperationException()
+                }
+            }.apply()
+        }
+    }
+
+    // Factory methods to create a preference delegate
+
+    /**
+     * Uses property name as the encrypted shared preference key
+     * example:
+     * var count by encryptedData.preference(0)
+     */
+    fun <T> preference(defaultValue: T): EncryptedPreference<T> = EncryptedPreference(this, defaultValue)
+
+    /**
+     * Uses explicit key as the encrypted shared preference key
+     * example:
+     * var count by encryptedData.preference("count", 0)
+     */
+    fun <T> preference(key: String, defaultValue: T): EncryptedPreference<T> = EncryptedPreference(this, defaultValue, key)
 }

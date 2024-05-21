@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.example.democompose.views.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import eu.anifantakis.mod.coredata.EncryptedData
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,9 +16,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 import javax.inject.Inject
+import kotlin.reflect.KProperty
 
 @HiltViewModel
-class SampleViewModel @Inject constructor() : BaseViewModel() {
+class SampleViewModel @Inject constructor(private val encryptedData: EncryptedData) : BaseViewModel() {
 
     // instead of StateFlow we can return directly a state
     // it is private set so it is immutable to the outside, but mutable inside
@@ -35,12 +37,9 @@ class SampleViewModel @Inject constructor() : BaseViewModel() {
     private var collectedNumber = 0
     private var channel = Channel<Int>()
 
-
+    var count by encryptedData.preference("count", 0)
 
     init {
-
-
-
         viewModelScope.launch {
             // from a channel we can observe things sent and act
             channel.consumeEach {
@@ -59,6 +58,8 @@ class SampleViewModel @Inject constructor() : BaseViewModel() {
 
             // we can send to channels values
             channel.send(collectedNumber)
+
+            count = stateNum
         }
     }
 }

@@ -34,7 +34,6 @@ import com.example.democompose.views.base.ExtraPaddings
 import com.example.democompose.views.base.LifecycleConfig
 import com.example.democompose.views.base.ScreenWithLoadingIndicator
 import com.example.democompose.views.base.TopAppBarConfig
-import eu.anifantakis.mod.coredata.sharedPreferences
 
 /**
  * Simple screen to show initializing hilt viewmodel
@@ -51,14 +50,22 @@ fun SampleScreen(
         paddingValues = paddingValues,
         extraPaddings = ExtraPaddings(16.dp)
     ) {
-        val context = LocalContext.current
+        // Without Encrypted Shared data as property delegation
+//        val context = LocalContext.current
+//        LaunchedEffect(key1 = Unit) {
+//            var count: Int by context.sharedPreferences("count", 0)
+//            //var count: String by context.sharedPreferences("count")
+//
+//            viewModel.stateNum = count
+//
+//        }
+
+        // With Encrypted Shared data as property delegation
         LaunchedEffect(key1 = Unit) {
-            var count: Int by context.sharedPreferences("count", 0)
-            //var count: String by context.sharedPreferences("count")
-
-            viewModel.stateNum = count
-
+            viewModel.stateNum = viewModel.count
         }
+
+
 
         // using state flow in ViewModel you need to collect inside composable
         val stateFlowNum by viewModel.stateFlowNum.collectAsState()

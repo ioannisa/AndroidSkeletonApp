@@ -16,6 +16,6 @@ class CredentialManagerImpl @Inject constructor(private val encryptedData: Encry
     }
 
     override fun getApiKey(): String {
-        return encryptedData.decryptSharedPreference(key = apiKeyPref) ?: ""
+        return encryptedData.decryptSharedPreference(key = apiKeyPref, "") ?: ""
     }
 }
