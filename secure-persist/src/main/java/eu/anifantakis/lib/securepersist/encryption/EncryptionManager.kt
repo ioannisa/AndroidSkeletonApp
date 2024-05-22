@@ -1,4 +1,4 @@
-package eu.anifantakis.lib.securepersist.encrypt
+package eu.anifantakis.lib.securepersist.encryption
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties

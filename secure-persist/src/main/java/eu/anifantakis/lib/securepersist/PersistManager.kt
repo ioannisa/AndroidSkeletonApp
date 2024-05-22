@@ -1,8 +1,8 @@
 package eu.anifantakis.lib.securepersist
 
 import android.content.Context
-import eu.anifantakis.lib.securepersist.encrypt.EncryptionManager
-import eu.anifantakis.lib.securepersist.encrypt.IEncryptionManager
+import eu.anifantakis.lib.securepersist.encryption.EncryptionManager
+import eu.anifantakis.lib.securepersist.encryption.IEncryptionManager
 import eu.anifantakis.lib.securepersist.internal.DataStoreManager
 import eu.anifantakis.lib.securepersist.internal.SharedPreferencesManager
 import kotlin.reflect.KProperty

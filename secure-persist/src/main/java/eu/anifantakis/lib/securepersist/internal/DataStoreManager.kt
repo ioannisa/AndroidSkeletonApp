@@ -9,8 +9,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import eu.anifantakis.lib.securepersist.encrypt.EncryptionManager
-import eu.anifantakis.lib.securepersist.encrypt.IEncryptionManager
+import eu.anifantakis.lib.securepersist.encryption.IEncryptionManager
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 

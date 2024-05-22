@@ -1,4 +1,4 @@
-package eu.anifantakis.lib.securepersist.encrypt
+package eu.anifantakis.lib.securepersist.encryption
 
 import java.security.cert.Certificate
 
