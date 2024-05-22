@@ -103,10 +103,19 @@ dependencies {
     implementation(project(":coredata"))
 
 
-    implementation(project(":secure-persist"))
-    //implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.4")
-
     // CUSTOM IMPLEMENTATIONS START ----->
+
+    /* change to play with local or remote persist module
+       true:  use the local persist module
+       false: use the remote persist module */
+    val useLocalPersistModule = false
+
+    if (useLocalPersistModule) {
+        implementation(project(":secure-persist"))
+    } else {
+        implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.5")
+    }
+
 
     hilt()
     retrofit()
