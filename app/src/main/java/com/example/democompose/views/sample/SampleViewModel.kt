@@ -105,6 +105,14 @@ class SampleViewModel @Inject constructor(private val encryptedData: PersistMana
         var delegation2Int by encryptedData.preference(22)
         var delegation2Boolean by encryptedData.preference(false)
 
+        delegation1String = "VAL1"
+        delegation1Int = 22
+        delegation1Boolean = false
+
+        delegation2String = "VAL2"
+        delegation2Int = 33
+        delegation2Boolean = true
+
         Timber.tag("DataStore").d("String value: $stringValue")
         Timber.tag("DataStore").d("Int value: $intValue")
         Timber.tag("DataStore").d("Boolean value: $booleanValue")
