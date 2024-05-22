@@ -103,8 +103,8 @@ dependencies {
     implementation(project(":coredata"))
 
 
-    //implementation(project(":secure-persist"))
-    implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.1")
+    implementation(project(":secure-persist"))
+    //implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.2")
 
     // CUSTOM IMPLEMENTATIONS START ----->
 
