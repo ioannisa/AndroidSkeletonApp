@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import eu.anifantakis.lib.securepersist.encrypt.EncryptionManager
+import eu.anifantakis.lib.securepersist.encryption.EncryptionManager
 import eu.anifantakis.lib.securepersist.PersistManager
 import javax.inject.Singleton
 
