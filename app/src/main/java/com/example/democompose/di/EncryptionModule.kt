@@ -16,9 +16,13 @@ object EncryptionModule {
 
     @Provides
     @Singleton
-    fun provideEncryptedPersistence(@ApplicationContext context: Context): PersistManager = PersistManager(context, "myKeyAlias")
+    fun provideEncryptedPersistence(@ApplicationContext context: Context):
+            PersistManager = PersistManager(context, "myKeyAlias")
 
     @Provides
     @Singleton
-    fun provideEncryptedManager(): EncryptionManager = EncryptionManager("myKeyAlias")
+    fun provideEncryptedManager(): EncryptionManager =
+        EncryptionManager
+            .withKeyStore("myKeyAlias")
+            .withExternalKey(EncryptionManager.generateExternalKey())
 }

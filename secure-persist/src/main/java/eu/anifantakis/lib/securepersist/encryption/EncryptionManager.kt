@@ -16,9 +16,7 @@ import javax.crypto.spec.SecretKeySpec
  * EncryptionManager class handles encryption and decryption using the Android KeyStore system or an external key.
  *
  * @param keyAlias The alias for the encryption key in the KeyStore.
- * @param externalKey The external secret key for encryption and decryption.
  */
-
 class EncryptionManager (
     private var keyAlias: String? = "keyAlias"
 ) : IEncryptionManager {
@@ -31,14 +29,37 @@ class EncryptionManager (
         private const val IV_SIZE = 12 // IV size for GCM is 12 bytes
         private const val TAG_SIZE = 128 // Tag size for GCM is 128 bits
 
+        /**
+         * Factory method to create an EncryptionManager using the Android KeyStore.
+         *
+         * @param keyAlias The alias for the encryption key in the KeyStore.
+         * @return The EncryptionManager instance.
+         */
         fun withKeyStore(keyAlias: String): EncryptionManager {
             return EncryptionManager(keyAlias)
         }
 
+        /**
+         * Factory method to create an EncryptionManager using an external key.
+         *
+         * @param externalKey The external secret key for encryption and decryption.
+         * @return The EncryptionManager instance.
+         */
         fun withExternalKey(externalKey: SecretKey): EncryptionManager {
             val manager = EncryptionManager(null)
             manager.setExternalKey(externalKey)
             return manager
+        }
+
+        /**
+         * Generates a new external secret key.
+         *
+         * @return The generated secret key.
+         */
+        fun generateExternalKey(): SecretKey {
+            val keyGenerator = KeyGenerator.getInstance("AES")
+            keyGenerator.init(256)
+            return keyGenerator.generateKey()
         }
     }
 
@@ -71,21 +92,21 @@ class EncryptionManager (
      * Sets an external secret key for encryption and decryption.
      *
      * @param secretKey The external secret key to be used.
+     * @return The EncryptionManager instance.
+     */
+    fun withExternalKey(secretKey: SecretKey): EncryptionManager {
+        setExternalKey(secretKey)
+        return this
+    }
+
+    /**
+     * Sets an external secret key for encryption and decryption.
+     *
+     * @param secretKey The external secret key to be used.
      */
     override fun setExternalKey(secretKey: SecretKey) {
         externalKey = secretKey
         keyAlias = null
-    }
-
-    /**
-     * Generates a new external secret key.
-     *
-     * @return The generated secret key.
-     */
-    override fun generateExternalKey(): SecretKey {
-        val keyGenerator = KeyGenerator.getInstance("AES")
-        keyGenerator.init(256)
-        return keyGenerator.generateKey()
     }
 
     /**
