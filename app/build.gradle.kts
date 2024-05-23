@@ -108,12 +108,12 @@ dependencies {
     /* change to play with local or remote persist module
        true:  use the local persist module
        false: use the remote persist module */
-    val useLocalPersistModule = false
+    val useLocalPersistModule = true
 
     if (useLocalPersistModule) {
         implementation(project(":secure-persist"))
     } else {
-        implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.5")
+        implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.6")
     }
 
 
