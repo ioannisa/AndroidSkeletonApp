@@ -113,7 +113,7 @@ dependencies {
     if (useLocalPersistModule) {
         implementation(project(":secure-persist"))
     } else {
-        implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.6")
+        implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.9")
     }
 
 
