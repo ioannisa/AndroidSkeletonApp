@@ -17,11 +17,12 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.crypto.SecretKey
 
 import javax.inject.Inject
 
 @HiltViewModel
-class SampleViewModel @Inject constructor(private val encryptedData: PersistManager, private val encryptedManager: EncryptionManager) : BaseViewModel() {
+class SampleViewModel @Inject constructor(private val encryptedData: PersistManager) : BaseViewModel() {
 
     // instead of StateFlow we can return directly a state
     // it is private set so it is immutable to the outside, but mutable inside
@@ -139,10 +140,15 @@ class SampleViewModel @Inject constructor(private val encryptedData: PersistMana
         Timber.tag("DataStore").d("Delegation2 Boolean value: $delegation2Boolean")
 
         val customKey = EncryptionManager.generateExternalKey()
+        Base64.encodeToString(customKey.encoded, Base64.DEFAULT)
 
         val encryptRaw = EncryptionManager.encryptValue("abcdefg", secretKey =  customKey)
+
+        val encodedKey = EncryptionManager.encodeSecretKey(customKey)
+        val decodedKey = EncryptionManager.decodeSecretKey(encodedKey)
+
         Timber.tag("DataStore").d("Raw Encrypted value for 'abcdefg' value: $encryptRaw")
-        Timber.tag("DataStore").d("Raw Decrypted value for 'abcdefg' value: ${EncryptionManager.decryptValue(encryptRaw, "INVALID", secretKey = customKey)}")
+        Timber.tag("DataStore").d("Raw Decrypted value for 'abcdefg' value: ${EncryptionManager.decryptValue(encryptRaw, "INVALID", secretKey = decodedKey)}")
 
 
         // Delete preferences
