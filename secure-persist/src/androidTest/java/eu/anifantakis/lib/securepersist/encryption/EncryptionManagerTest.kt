@@ -1,24 +1,43 @@
 package eu.anifantakis.lib.securepersist.encryption
 
+import android.content.Context
+import android.content.res.AssetManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.Assert.assertEquals
+import org.junit.After
+import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
+import java.io.FileOutputStream
 import javax.crypto.SecretKey
 
 @RunWith(AndroidJUnit4::class)
 class EncryptionManagerTest {
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+
+    @Before
+    fun setup() {
+        // Any setup code, if necessary
+    }
+
+    @After
+    fun teardown() {
+        // Clean up files
+        val encryptedFile = File(context.filesDir, "encrypted_test_file")
+        if (encryptedFile.exists()) encryptedFile.delete()
+
+        val decryptedFile = File(context.filesDir, "decrypted_test.txt")
+        if (decryptedFile.exists()) decryptedFile.delete()
+    }
 
     @Test
     fun testKeyStoreEncryptionDecryption() {
         val keyAlias = "testKeyAlias"
 
-        val encryptionManager =  EncryptionManager.builder(context)
-            .withKeyStore(keyAlias)
-            .build()
+        val encryptionManager = EncryptionManager(context, keyAlias)
 
         val originalText = "Hello, Secure World!"
         val encryptedData = encryptionManager.encryptData(originalText)
@@ -29,9 +48,7 @@ class EncryptionManagerTest {
 
     @Test
     fun testExternalKeyEncryptionDecryption() {
-        val encryptionManager =  EncryptionManager.builder(context)
-            .withExternalKey(EncryptionManager.generateExternalKey())
-            .build()
+        val encryptionManager = EncryptionManager(context, EncryptionManager.generateExternalKey())
 
         val originalText = "Hello, Secure World!"
         val encryptedData = encryptionManager.encryptData(originalText)
@@ -41,36 +58,9 @@ class EncryptionManagerTest {
     }
 
     @Test
-    fun testSwitchToExternalKey() {
-        val keyAlias = "testKeyAlias"
-
-        val encryptionManager =  EncryptionManager.builder(context)
-            .withKeyStore(keyAlias)
-            .build()
-
-        // Initially use KeyStore-based encryption
-        val originalText = "Hello, Secure World!"
-        var encryptedData = encryptionManager.encryptData(originalText)
-        var decryptedText = encryptionManager.decryptData(encryptedData)
-
-        assertEquals(originalText, decryptedText)
-
-        // Switch to an external key
-        val externalKey = EncryptionManager.generateExternalKey()
-        encryptionManager.setExternalKey(externalKey)
-
-        encryptedData = encryptionManager.encryptData(originalText)
-        decryptedText = encryptionManager.decryptData(encryptedData)
-
-        assertEquals(originalText, decryptedText)
-    }
-
-    @Test
     fun testBase64EncodedEncryptionDecryption() {
         val keyAlias = "testKeyAlias"
-        val encryptionManager =  EncryptionManager.builder(context)
-            .withKeyStore(keyAlias)
-            .build()
+        val encryptionManager = EncryptionManager(context, keyAlias)
 
         val originalValue = "Hello, Secure World!"
         val encryptedValue = encryptionManager.encryptValue(originalValue)
@@ -81,9 +71,7 @@ class EncryptionManagerTest {
 
     @Test
     fun testExternalKeyBase64EncodedEncryptionDecryption() {
-        val encryptionManager =  EncryptionManager.builder(context)
-            .withExternalKey(EncryptionManager.generateExternalKey())
-            .build()
+        val encryptionManager = EncryptionManager(context, EncryptionManager.generateExternalKey())
 
         val originalValue = "Hello, Secure World!"
         val encryptedValue = encryptionManager.encryptValue(originalValue)
@@ -117,37 +105,11 @@ class EncryptionManagerTest {
     @Test
     fun testFactoryConstructionWithExternalKey() {
         val externalKey = EncryptionManager.generateExternalKey()
-        val encryptionManager =  EncryptionManager.builder(context)
-            .withExternalKey(externalKey)
-            .build()
+        val encryptionManager = EncryptionManager(context, externalKey)
 
         val originalText = "Hello, Secure World!"
         val encryptedData = encryptionManager.encryptData(originalText)
         val decryptedText = encryptionManager.decryptData(encryptedData)
-
-        assertEquals(originalText, decryptedText)
-    }
-
-    @Test
-    fun testSetExternalKeyAfterConstruction() {
-        val keyAlias = "testKeyAlias"
-        val encryptionManager =  EncryptionManager.builder(context)
-            .withKeyStore(keyAlias)
-            .build()
-
-        // Use KeyStore-based encryption
-        val originalText = "Hello, Secure World!"
-        var encryptedData = encryptionManager.encryptData(originalText)
-        var decryptedText = encryptionManager.decryptData(encryptedData)
-
-        assertEquals(originalText, decryptedText)
-
-        // Set an external key after construction
-        val externalKey = EncryptionManager.generateExternalKey()
-        encryptionManager.setExternalKey(externalKey)
-
-        encryptedData = encryptionManager.encryptData(originalText)
-        decryptedText = encryptionManager.decryptData(encryptedData)
 
         assertEquals(originalText, decryptedText)
     }
@@ -164,5 +126,37 @@ class EncryptionManagerTest {
         val decryptedText = EncryptionManager.decryptData(encryptedData, decodedKey)
 
         assertEquals(originalText, decryptedText)
+    }
+
+    @Test
+    fun testEncryptAndDecryptFileFromFileSystem() {
+        val testFileName = "test.txt"
+        val encryptedFileName = "encrypted_test_file"
+        val testFileContent = "Hello, Secure File!"
+
+        val encryptionManager = EncryptionManager(context, "keyAlias")
+
+        // Create test file with specific content
+        val testFile = File(context.filesDir, testFileName)
+        FileOutputStream(testFile).use { it.write(testFileContent.toByteArray()) }
+
+        // Encrypt the file from file system
+        encryptionManager.encryptFile(testFile, encryptedFileName)
+
+        // Decrypt the file
+        val decryptedContent: ByteArray = encryptionManager.decryptFile(encryptedFileName)
+        val decryptedText = String(decryptedContent)
+
+        // Compare the original and decrypted content
+        assertEquals(
+            "Decrypted content does not match the original content",
+            testFileContent,
+            decryptedText
+        )
+
+        // Clean up
+        testFile.delete()
+        val encryptedFile = File(context.filesDir, encryptedFileName)
+        if (encryptedFile.exists()) encryptedFile.delete()
     }
 }

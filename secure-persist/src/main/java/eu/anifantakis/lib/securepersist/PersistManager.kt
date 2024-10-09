@@ -9,11 +9,7 @@ import kotlin.reflect.KProperty
 
 class PersistManager(context: Context, keyAlias: String) {
 
-    private val encryptionManager: IEncryptionManager = EncryptionManager.builder(context)
-        .withKeyStore(keyAlias)
-        .withExternalKey(EncryptionManager.generateExternalKey())
-        .build()
-
+    private val encryptionManager: IEncryptionManager = EncryptionManager(context, keyAlias)
     private val sharedPreferencesManager = SharedPreferencesManager(context)
     private val dataStoreManager = DataStoreManager(context, encryptionManager)
 

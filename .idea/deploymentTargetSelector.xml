@@ -11,10 +11,13 @@
       <SelectionState runConfigName="EncryptionManagerTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testKeyStoreEncryptionDecryption()">
+      <SelectionState runConfigName="testEncryptAndDecryptFile()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="PersistManagerTest">
+      <SelectionState runConfigName="testEncryptAndDecryptFileFromAssets()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="testEncryptAndDecryptFileFromFileSystem()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
