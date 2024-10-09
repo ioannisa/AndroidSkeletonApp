@@ -50,8 +50,6 @@ interface IEncryptionManager {
      *
      * @param inputFile The [File] object representing the file to encrypt.
      * @param encryptedFileName The name of the encrypted file to be created in the app's private storage.
-     * @throws IOException If an I/O error occurs during reading the input file or writing the encrypted file.
-     * @throws GeneralSecurityException If encryption fails.
      */
     fun encryptFile(inputFile: File, encryptedFileName: String)
 
@@ -63,8 +61,6 @@ interface IEncryptionManager {
      *
      * @param encryptedFileName The name of the encrypted file stored in the app's private storage.
      * @return The decrypted file content as a [ByteArray].
-     * @throws IOException If an I/O error occurs during reading the encrypted file.
-     * @throws GeneralSecurityException If decryption fails.
      */
     fun decryptFile(encryptedFileName: String): ByteArray
 

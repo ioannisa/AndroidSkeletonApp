@@ -2,8 +2,10 @@ package eu.anifantakis.lib.securepersist.encryption
 
 import android.content.Context
 import android.content.res.AssetManager
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import eu.anifantakis.lib.securepersist.PersistManager
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -16,11 +18,11 @@ import javax.crypto.SecretKey
 @RunWith(AndroidJUnit4::class)
 class EncryptionManagerTest {
 
-    private val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+    private lateinit var context: Context
 
     @Before
     fun setup() {
-        // Any setup code, if necessary
+        context = InstrumentationRegistry.getInstrumentation().targetContext
     }
 
     @After
