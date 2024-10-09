@@ -42,7 +42,11 @@ fun ComposeRoot() {
             ) {
                 composable(Destination.Master.route) {
                     val viewModel = it.sharedViewModel<ArticlesViewModel>(navController)
-                    MasterView(paddingValues = paddingValues, viewModel = viewModel, onNavigateToDetailScreen = navController::navigate )
+                    MasterView(paddingValues = paddingValues, viewModel = viewModel,
+                        onNavigateToDetailScreen = { navEvent ->
+                            navController.navigate( navEvent.route )
+                        }
+                    )
                 }
 
                 composable(Destination.Detail.route) {

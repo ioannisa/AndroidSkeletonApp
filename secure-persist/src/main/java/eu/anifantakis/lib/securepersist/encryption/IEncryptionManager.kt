@@ -41,6 +41,22 @@ interface IEncryptionManager {
     fun <T> decryptValue(encryptedValue: String, defaultValue: T): T
 
     /**
+     * Encrypts a file from the assets folder and stores the encrypted file in the app's private storage.
+     *
+     * @param assetFileName The name of the file in the assets folder.
+     * @param encryptedFileName The name for the encrypted file to be stored in the app's private storage.
+     */
+    fun encryptFileFromAssets(assetFileName: String, encryptedFileName: String)
+
+    /**
+     * Decrypts a previously encrypted file stored in the app's private storage.
+     *
+     * @param encryptedFileName The name of the encrypted file stored in the app's private storage.
+     * @return The decrypted file content as a byte array.
+     */
+    fun decryptFile(encryptedFileName: String): ByteArray
+
+    /**
      * Retrieves the attestation certificate chain for the key.
      *
      * @param alias The alias of the key to get the attestation for.

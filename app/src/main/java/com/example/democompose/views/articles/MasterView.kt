@@ -1,5 +1,6 @@
 package com.example.democompose.views.articles
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -61,7 +62,7 @@ fun MasterView(
         paddingValues = paddingValues
     ) {
         result.let { articles ->
-            PullToRefreshList(isLoadingPUll, onPull = { viewModel.fetchArticlesPull() }) {
+            PullToRefreshList(isRefreshing = isLoadingPUll, onRefresh =  { viewModel.fetchArticlesPull() }) {
                 LazyColumn(
                     verticalArrangement = Arrangement.Top,
                     contentPadding = PaddingValues(horizontal = 0.dp)
@@ -89,6 +90,7 @@ fun MasterView(
                                     article = article,
                                     modifier = Modifier
                                         .clickable {
+                                            Log.d("ROUTING", "MasterView: ${NavEvent.Navigate(Destination.Detail.makeRoute(article.id))}")
                                             onNavigateToDetailScreen(NavEvent.Navigate(Destination.Detail.makeRoute(article.id)))
                                         }
                                         .background(MaterialTheme.colorScheme.surface)

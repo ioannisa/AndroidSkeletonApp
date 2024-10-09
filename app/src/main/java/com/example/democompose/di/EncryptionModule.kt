@@ -21,8 +21,10 @@ object EncryptionModule {
 
     @Provides
     @Singleton
-    fun provideEncryptedManager(): EncryptionManager =
-        EncryptionManager
+    fun provideEncryptedManager(@ApplicationContext context: Context): EncryptionManager {
+        return EncryptionManager.builder(context)
             .withKeyStore("myKeyAlias")
             .withExternalKey(EncryptionManager.generateExternalKey())
+            .build()
+    }
 }

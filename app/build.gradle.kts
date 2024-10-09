@@ -4,6 +4,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("de.mannodermaus.android-junit5") version "1.10.0.0"
     id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -86,19 +87,24 @@ android {
     }
 }
 
-val lifecycleVer = "2.8.0"
+//composeCompiler {
+//    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+//    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
+//}
+
+val lifecycleVer = "2.8.6"
 
 dependencies {
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVer")
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation(platform("androidx.compose:compose-bom:2024.05.00"))
+    implementation("androidx.activity:activity-compose:1.9.2")
+    implementation(platform("androidx.compose:compose-bom:2024.09.03"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.benchmark:benchmark-common:1.2.4")
+    implementation("androidx.benchmark:benchmark-common:1.3.2")
     implementation("com.google.android.material:material:1.12.0")
     implementation(project(":coredata"))
 
@@ -110,11 +116,11 @@ dependencies {
        false: use the remote persist module */
     val useLocalPersistModule = true
 
-    if (useLocalPersistModule) {
+    //if (useLocalPersistModule) {
         implementation(project(":secure-persist"))
-    } else {
-        implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.12")
-    }
+    //} else {
+    //    implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.12")
+    //}
 
 
     hilt()
@@ -134,7 +140,7 @@ dependencies {
     // required for pull to refresh
     implementation("androidx.compose.material3:material3-adaptive-android:1.0.0-alpha06")
 
-    implementation ("androidx.navigation:navigation-compose:2.7.7")
+    implementation ("androidx.navigation:navigation-compose:2.8.2")
 
     // shared element transitions library
     // https://github.com/skydoves/Orbital
@@ -142,9 +148,9 @@ dependencies {
     // <----- CUSTOM IMPLEMENTATIONS END
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.05.00"))
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.09.03"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
@@ -171,11 +177,11 @@ fun DependencyHandler.hilt() {
     // HILT WORK MANAGER
     // ksp("androidx.hilt:hilt-compiler:1.2.0")
     // implementation("androidx.hilt:hilt-work:1.2.0")
-    // implementation("androidx.work:work-runtime-ktx:2.9.0")
+    // implementation("androidx.work:work-runtime-ktx:2.9.1")
 }
 
 fun DependencyHandler.retrofit() {
-    val retrofitVersion = "2.9.0"
+    val retrofitVersion = "2.11.0"
     val okHttpVersion = "4.12.0"
     val moshiVersion = "1.15.1"
 

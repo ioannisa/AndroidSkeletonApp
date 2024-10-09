@@ -15,7 +15,10 @@ class EncryptionManagerTest {
     @Test
     fun testKeyStoreEncryptionDecryption() {
         val keyAlias = "testKeyAlias"
-        val encryptionManager = EncryptionManager.withKeyStore(keyAlias)
+
+        val encryptionManager =  EncryptionManager.builder(context)
+            .withKeyStore(keyAlias)
+            .build()
 
         val originalText = "Hello, Secure World!"
         val encryptedData = encryptionManager.encryptData(originalText)
@@ -26,7 +29,9 @@ class EncryptionManagerTest {
 
     @Test
     fun testExternalKeyEncryptionDecryption() {
-        val encryptionManager = EncryptionManager.withExternalKey(EncryptionManager.generateExternalKey())
+        val encryptionManager =  EncryptionManager.builder(context)
+            .withExternalKey(EncryptionManager.generateExternalKey())
+            .build()
 
         val originalText = "Hello, Secure World!"
         val encryptedData = encryptionManager.encryptData(originalText)
@@ -38,7 +43,10 @@ class EncryptionManagerTest {
     @Test
     fun testSwitchToExternalKey() {
         val keyAlias = "testKeyAlias"
-        val encryptionManager = EncryptionManager.withKeyStore(keyAlias)
+
+        val encryptionManager =  EncryptionManager.builder(context)
+            .withKeyStore(keyAlias)
+            .build()
 
         // Initially use KeyStore-based encryption
         val originalText = "Hello, Secure World!"
@@ -60,7 +68,9 @@ class EncryptionManagerTest {
     @Test
     fun testBase64EncodedEncryptionDecryption() {
         val keyAlias = "testKeyAlias"
-        val encryptionManager = EncryptionManager.withKeyStore(keyAlias)
+        val encryptionManager =  EncryptionManager.builder(context)
+            .withKeyStore(keyAlias)
+            .build()
 
         val originalValue = "Hello, Secure World!"
         val encryptedValue = encryptionManager.encryptValue(originalValue)
@@ -71,7 +81,9 @@ class EncryptionManagerTest {
 
     @Test
     fun testExternalKeyBase64EncodedEncryptionDecryption() {
-        val encryptionManager = EncryptionManager.withExternalKey(EncryptionManager.generateExternalKey())
+        val encryptionManager =  EncryptionManager.builder(context)
+            .withExternalKey(EncryptionManager.generateExternalKey())
+            .build()
 
         val originalValue = "Hello, Secure World!"
         val encryptedValue = encryptionManager.encryptValue(originalValue)
@@ -105,7 +117,9 @@ class EncryptionManagerTest {
     @Test
     fun testFactoryConstructionWithExternalKey() {
         val externalKey = EncryptionManager.generateExternalKey()
-        val encryptionManager = EncryptionManager.withExternalKey(externalKey)
+        val encryptionManager =  EncryptionManager.builder(context)
+            .withExternalKey(externalKey)
+            .build()
 
         val originalText = "Hello, Secure World!"
         val encryptedData = encryptionManager.encryptData(originalText)
@@ -117,7 +131,9 @@ class EncryptionManagerTest {
     @Test
     fun testSetExternalKeyAfterConstruction() {
         val keyAlias = "testKeyAlias"
-        val encryptionManager = EncryptionManager.withKeyStore(keyAlias)
+        val encryptionManager =  EncryptionManager.builder(context)
+            .withKeyStore(keyAlias)
+            .build()
 
         // Use KeyStore-based encryption
         val originalText = "Hello, Secure World!"

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -26,7 +25,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -36,12 +36,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -161,7 +158,7 @@ fun ScreenWithLoadingIndicator (
     lifecycleConfig: LifecycleConfig,
 
     scaffoldViewModel: ScaffoldViewModel = hiltViewModel(LocalContext.current.findActivity()),
-    paddingValues: PaddingValues,
+    paddingValues: PaddingValues? = null,
     extraPaddings: ExtraPaddings = ExtraPaddings(),
 
     content: @Composable () -> Unit
@@ -191,11 +188,14 @@ fun ScreenWithLoadingIndicator (
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(
-            top = paddingValues.calculateTopPadding() + extraPaddings.top,
-            start = paddingValues.calculateStartPadding(layoutDirection = LocalLayoutDirection.current) + extraPaddings.start,
-            end = paddingValues.calculateEndPadding(layoutDirection = LocalLayoutDirection.current) + extraPaddings.end,
-            bottom = paddingValues.calculateBottomPadding() + extraPaddings.bottom
-        )) {
+            PaddingValues(
+                top = (paddingValues?.calculateTopPadding() ?: 0.dp) + extraPaddings.top,
+                start = (paddingValues?.calculateStartPadding(LocalLayoutDirection.current) ?: 0.dp) + extraPaddings.start,
+                end = (paddingValues?.calculateEndPadding(LocalLayoutDirection.current) ?: 0.dp) + extraPaddings.end,
+                bottom = (paddingValues?.calculateBottomPadding() ?: 0.dp) + extraPaddings.bottom
+            )
+        )
+    ) {
         Column {
             //MyTopAppBar(title = topAppBarTitle, onBackPress = topAppBarOnBackPress)
             content()
@@ -231,35 +231,24 @@ fun MyTopAppBar(title: String? = null, onBackPress: (() -> Unit)? = null) {
 @Composable
 fun PullToRefreshList (
     isRefreshing: Boolean,
-    onPull: () -> Unit,
+    onRefresh: () -> Unit,
     content: @Composable () -> Unit
 ) {
     val state = rememberPullToRefreshState()
-    var started by rememberSaveable { mutableStateOf(false) }
 
-    if (!isRefreshing && started) {
-        state.endRefresh()
-        started = false
-    }
-
-    if (state.isRefreshing) {
-        LaunchedEffect(state.isRefreshing) {
-            onPull()
-            started = true
+    PullToRefreshBox(
+        state = state,
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        indicator = {
+            PullToRefreshDefaults.Indicator(
+                state = state,
+                isRefreshing = isRefreshing,
+                modifier = Modifier.align(Alignment.TopCenter),
+            )
         }
-    }
-    val scaleFraction = if (state.isRefreshing) 1f else
-        LinearOutSlowInEasing.transform(state.progress).coerceIn(0f, 1f)
-
-    Box(Modifier.nestedScroll(state.nestedScrollConnection)) {
+    ) {
         content()
-
-        PullToRefreshContainer(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .graphicsLayer(scaleX = scaleFraction, scaleY = scaleFraction),
-            state = state,
-        )
     }
 }
 
