@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.democompose.views.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import eu.anifantakis.lib.securepersist.PersistManager
-import eu.anifantakis.lib.securepersist.compose.mutableStateOf
 import eu.anifantakis.lib.securepersist.encryption.EncryptionManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -39,19 +38,19 @@ class SampleViewModel @Inject constructor(private val persistManager: PersistMan
     private var collectedNumber = 0
     private var channel = Channel<Int>()
 
-    var count by persistManager.preference(0, "count")
+    var count by persistManager.sharedPrefs.preference(0, "count")
 
     // using encrypted shared preferences
 //    @SharedPref("xxx2")
 //    var persistedNumber1 by persistManager.annotatedPreference(1000)
 
 
-    private var _persistedNumber1 by persistManager.preference<Int>(1000)
+    private var _persistedNumber1 by persistManager.sharedPrefs.preference<Int>(1000)
     var persistedNumber1State by mutableIntStateOf(_persistedNumber1)
         private set
 
     // using encrypted datastore preferences, but with direct exposure to state
-    var persistedNumber2 by persistManager.mutableStateOf(2000, storage = PersistManager.Storage.SHARED_PREFERENCES)
+    var persistedNumber2 by persistManager.sharedPrefs.preference(2000)
         private set
 
     init {
@@ -124,13 +123,13 @@ class SampleViewModel @Inject constructor(private val persistManager: PersistMan
         val decryptedBoolean: Boolean = persistManager.dataStorePrefs.get(eBooleanKey, false)
 
         // Using Delegation
-        var delegation1String by persistManager.preference(stringKey, "delegationString1", storage = PersistManager.Storage.SHARED_PREFERENCES)
-        var delegation1Int by persistManager.preference(11, intKey, storage = PersistManager.Storage.DATA_STORE)
-        var delegation1Boolean by persistManager.preference(true, booleanKey, storage = PersistManager.Storage.DATA_STORE)
+        var delegation1String by persistManager.sharedPrefs.preference(stringKey, "delegationString1")
+        var delegation1Int by persistManager.dataStorePrefs.preference(11, intKey, encrypted = false)
+        var delegation1Boolean by persistManager.dataStorePrefs.preference(true, booleanKey, encrypted = false)
 
-        var delegation2String by persistManager.preference("delegationString2", storage = PersistManager.Storage.SHARED_PREFERENCES)
-        var delegation2Int by persistManager.preference(22, storage = PersistManager.Storage.DATA_STORE_ENCRYPTED)
-        var delegation2Boolean by persistManager.preference(false, storage = PersistManager.Storage.DATA_STORE)
+        var delegation2String by persistManager.sharedPrefs.preference("delegationString2")
+        var delegation2Int by persistManager.dataStorePrefs.preference(22)
+        var delegation2Boolean by persistManager.dataStorePrefs.preference(false, encrypted = false)
 
 //        delegation1String = "VAL1"
 //        delegation1Int = 22

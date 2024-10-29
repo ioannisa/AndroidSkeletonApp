@@ -112,8 +112,8 @@ dependencies {
     // CUSTOM IMPLEMENTATIONS START ----->
 
     // Android Secure Persist
-    implementation("com.github.ioannisa.secured-android-persist:secure-persist:2.3.3")
-    implementation("com.github.ioannisa.secured-android-persist:secure-persist-compose:2.3.3")
+    implementation("com.github.ioannisa.secured-android-persist:secure-persist:2.4.0")
+    implementation("com.github.ioannisa.secured-android-persist:secure-persist-compose:2.4.0")
 
 
     hilt()
