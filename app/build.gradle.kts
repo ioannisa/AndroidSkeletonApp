@@ -111,16 +111,9 @@ dependencies {
 
     // CUSTOM IMPLEMENTATIONS START ----->
 
-    /* change to play with local or remote persist module
-       true:  use the local persist module
-       false: use the remote persist module */
-    val useLocalPersistModule = true
-
-    //if (useLocalPersistModule) {
-        implementation(project(":secure-persist"))
-    //} else {
-    //    implementation("com.github.ioannisa:SecuredAndroidPersistence:1.0.12")
-    //}
+    // Android Secure Persist
+    implementation("com.github.ioannisa.secured-android-persist:secure-persist:2.3.3")
+    implementation("com.github.ioannisa.secured-android-persist:secure-persist-compose:2.3.3")
 
 
     hilt()

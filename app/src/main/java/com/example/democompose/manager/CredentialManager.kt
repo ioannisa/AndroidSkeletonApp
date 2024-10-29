@@ -12,10 +12,10 @@ class CredentialManagerImpl @Inject constructor(private val encryptedData: Persi
     private val apiKeyPref = "API_KEY"
 
     override fun setApiKey(apiKey: String) {
-        encryptedData.encryptSharedPreference(apiKeyPref, apiKey)
+        encryptedData.sharedPrefs.put(apiKeyPref, apiKey)
     }
 
     override fun getApiKey(): String {
-        return encryptedData.decryptSharedPreference(key = apiKeyPref, "") ?: ""
+        return encryptedData.sharedPrefs.get(key = apiKeyPref, "") ?: ""
     }
 }

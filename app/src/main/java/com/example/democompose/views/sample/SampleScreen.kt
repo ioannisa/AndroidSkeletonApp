@@ -1,14 +1,9 @@
 package com.example.democompose.views.sample
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,16 +15,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.democompose.views.base.ExtraPaddings
 import com.example.democompose.views.base.LifecycleConfig
 import com.example.democompose.views.base.ScreenWithLoadingIndicator
@@ -65,11 +59,9 @@ fun SampleScreen(
             viewModel.stateNum = viewModel.count
         }
 
-
-
         // using state flow in ViewModel you need to collect inside composable
-        val stateFlowNum by viewModel.stateFlowNum.collectAsState()
-        val sharedFlowNum by viewModel.sharedFlowNum.collectAsState(0)
+        val stateFlowNum by viewModel.stateFlowNum.collectAsStateWithLifecycle()
+        val sharedFlowNum by viewModel.sharedFlowNum.collectAsStateWithLifecycle(0)
 
         // but to collect stateNum you don't need anything,
         // cause its of state type at the viewmodel
@@ -108,6 +100,9 @@ fun SampleScreen(
                     Text("stateNum -> ${viewModel.stateNum}")
                     Text("stateFlowNum -> $stateFlowNum")
                     Text("sharedFlowNum -> $sharedFlowNum")
+
+                    Text("persist state 1 -> ${viewModel.persistedNumber1State}")
+                    Text("persist state 2 -> ${viewModel.persistedNumber2}")
 
                     Button(onClick = {
                         viewModel.incrementCounters()
@@ -171,5 +166,4 @@ fun ShowAlertDialog(onDismiss: () -> Unit) {
             }
         }
     )
-
 }

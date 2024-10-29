@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.democompose.views.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import eu.anifantakis.lib.securepersist.PersistManager
+import eu.anifantakis.lib.securepersist.compose.mutableStateOf
 import eu.anifantakis.lib.securepersist.encryption.EncryptionManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -17,12 +18,10 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.crypto.SecretKey
-
 import javax.inject.Inject
 
 @HiltViewModel
-class SampleViewModel @Inject constructor(private val encryptedData: PersistManager) : BaseViewModel() {
+class SampleViewModel @Inject constructor(private val persistManager: PersistManager) : BaseViewModel() {
 
     // instead of StateFlow we can return directly a state
     // it is private set so it is immutable to the outside, but mutable inside
@@ -40,7 +39,20 @@ class SampleViewModel @Inject constructor(private val encryptedData: PersistMana
     private var collectedNumber = 0
     private var channel = Channel<Int>()
 
-    var count by encryptedData.preference("count", 0)
+    var count by persistManager.preference(0, "count")
+
+    // using encrypted shared preferences
+//    @SharedPref("xxx2")
+//    var persistedNumber1 by persistManager.annotatedPreference(1000)
+
+
+    private var _persistedNumber1 by persistManager.preference<Int>(1000)
+    var persistedNumber1State by mutableIntStateOf(_persistedNumber1)
+        private set
+
+    // using encrypted datastore preferences, but with direct exposure to state
+    var persistedNumber2 by persistManager.mutableStateOf(2000, storage = PersistManager.Storage.SHARED_PREFERENCES)
+        private set
 
     init {
         viewModelScope.launch {
@@ -54,7 +66,7 @@ class SampleViewModel @Inject constructor(private val encryptedData: PersistMana
         }
 
         viewModelScope.launch {
-            preferences()
+            demo_datastore_preferences()
         }
     }
 
@@ -68,10 +80,18 @@ class SampleViewModel @Inject constructor(private val encryptedData: PersistMana
 
             count = stateNum
         }
+
+        // Option 1- updating state with persistence separate property (not recommended)
+        persistedNumber1State++
+        _persistedNumber1 = persistedNumber1State
+
+
+        // Option 2- updating state with persistence directly exposed to state (recommended)
+        persistedNumber2++
     }
 
     // DataStore with/without encryption
-    suspend fun preferences() {
+    suspend fun demo_datastore_preferences() {
         // Define keys
         val stringKey = "example_string_key"
         val intKey = "example_int_key"
@@ -82,35 +102,35 @@ class SampleViewModel @Inject constructor(private val encryptedData: PersistMana
         val eBooleanKey = "e_example_boolean_key"
 
         // Save preferences
-//        encryptedData.putDataStorePreference(stringKey, "exampleString")
-//        encryptedData.putDataStorePreference(intKey, 123)
-//        encryptedData.putDataStorePreference(booleanKey, true)
+//        persistManager.dataStorePrefs.put(stringKey, "exampleString", encrypted = false)
+//        persistManager.dataStorePrefs.put(intKey, 123, encrypted = false)
+//        persistManager.dataStorePrefs.put(booleanKey, true, encrypted = false)
 //
-//        encryptedData.encryptDataStorePreference(eStringKey, "encryptedString")
-//        encryptedData.encryptDataStorePreference(eIntKey, 567)
-//        encryptedData.encryptDataStorePreference(eBooleanKey, true)
+//        persistManager.dataStorePrefs.put(eStringKey, "encryptedString")
+//        persistManager.dataStorePrefs.put(eIntKey, 567)
+//        persistManager.dataStorePrefs.put(eBooleanKey, true)
 
         // Retrieve preferences
-        val stringValue: String = encryptedData.getDataStorePreference(stringKey, "")
-        val intValue: Int = encryptedData.getDataStorePreference(intKey, 0)
-        val booleanValue: Boolean = encryptedData.getDataStorePreference(booleanKey, false)
+        val stringValue: String = persistManager.dataStorePrefs.get(stringKey, "", encrypted = false)
+        val intValue: Int = persistManager.dataStorePrefs.get(intKey, 0, encrypted = false)
+        val booleanValue: Boolean = persistManager.dataStorePrefs.get(booleanKey, false, encrypted = false)
 
         // we call the getDataStorePreference on an encrypted value to see how it looks encrypted
-        val encryptedString: String = encryptedData.getDataStorePreference(eStringKey, "")
+        val encryptedString: String = persistManager.dataStorePrefs.get(eStringKey, "", encrypted = false)
 
         // then we do the same for the decrypted value
-        val decryptedString: String = encryptedData.decryptDataStorePreference(eStringKey, "")
-        val decryptedInt: Int = encryptedData.decryptDataStorePreference(eIntKey, 0)
-        val decryptedBoolean: Boolean = encryptedData.decryptDataStorePreference(eBooleanKey, false)
+        val decryptedString: String = persistManager.dataStorePrefs.get(eStringKey, "")
+        val decryptedInt: Int = persistManager.dataStorePrefs.get(eIntKey, 0)
+        val decryptedBoolean: Boolean = persistManager.dataStorePrefs.get(eBooleanKey, false)
 
         // Using Delegation
-        var delegation1String by encryptedData.preference(stringKey, "delegationString1")
-        var delegation1Int by encryptedData.preference(intKey, 11)
-        var delegation1Boolean by encryptedData.preference(booleanKey, true)
+        var delegation1String by persistManager.preference(stringKey, "delegationString1", storage = PersistManager.Storage.SHARED_PREFERENCES)
+        var delegation1Int by persistManager.preference(11, intKey, storage = PersistManager.Storage.DATA_STORE)
+        var delegation1Boolean by persistManager.preference(true, booleanKey, storage = PersistManager.Storage.DATA_STORE)
 
-        var delegation2String by encryptedData.preference("delegationString2")
-        var delegation2Int by encryptedData.preference(22)
-        var delegation2Boolean by encryptedData.preference(false)
+        var delegation2String by persistManager.preference("delegationString2", storage = PersistManager.Storage.SHARED_PREFERENCES)
+        var delegation2Int by persistManager.preference(22, storage = PersistManager.Storage.DATA_STORE_ENCRYPTED)
+        var delegation2Boolean by persistManager.preference(false, storage = PersistManager.Storage.DATA_STORE)
 
 //        delegation1String = "VAL1"
 //        delegation1Int = 22
@@ -152,8 +172,8 @@ class SampleViewModel @Inject constructor(private val encryptedData: PersistMana
 
 
         // Delete preferences
-        encryptedData.deleteDataStorePreference(stringKey)
-        encryptedData.deleteDataStorePreference(intKey)
-        encryptedData.deleteDataStorePreference(booleanKey)
+        persistManager.dataStorePrefs.delete(stringKey)
+        persistManager.dataStorePrefs.delete(intKey)
+        persistManager.dataStorePrefs.delete(booleanKey)
     }
 }
